@@ -1,0 +1,47 @@
+{
+  "name": "@meridian/mock-external",
+  "version": "2026.9.0",
+  "private": true,
+  "description": "Local stand-ins for every external system the Meridian digital estate talks to. Nothing here is production software.",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=18.19.0 <19"
+  },
+  "workspaces": [
+    "lib/mock-kit",
+    "lib/semaphore-client",
+    "keystone-idp-mock",
+    "bedrock-core-mock",
+    "aggregio-mock",
+    "tickerhaus-mock",
+    "triscore-mock",
+    "paylink-network-mock",
+    "vault-mock",
+    "splunk-hec-mock",
+    "lantern-collector-mock",
+    "semaphore-flags-mock",
+    "ldap-mock"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "test": "jest --runInBand",
+    "lint": "eslint \"*/src/**/*.ts\" \"lib/*/src/**/*.ts\"",
+    "start:all": "node scripts/start-all.js",
+    "clean": "rm -rf */dist lib/*/dist",
+    "publish:internal": "bash scripts/publish-internal.sh",
+    "verdaccio": "bash scripts/verdaccio-up.sh"
+  },
+  "dependencies": {
+    "@meridian/domain-fixtures": "file:../platform-services/libs/ts/domain-fixtures"
+  },
+  "devDependencies": {
+    "@types/jest": "29.5.12",
+    "@types/node": "18.19.31",
+    "@typescript-eslint/eslint-plugin": "6.21.0",
+    "@typescript-eslint/parser": "6.21.0",
+    "eslint": "8.56.0",
+    "jest": "29.7.0",
+    "ts-jest": "29.1.2",
+    "typescript": "5.3.3"
+  }
+}
