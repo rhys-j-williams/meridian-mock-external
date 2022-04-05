@@ -1,0 +1,19 @@
+{
+  "name": "@meridian/triscore-mock",
+  "version": "1.0.4",
+  "private": true,
+  "description": "TriScore credit bureau mock: deterministic scores and knowledge based verification",
+  "license": "UNLICENSED",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/main.js",
+    "test": "jest --runInBand --rootDir . --config ../jest.config.js"
+  },
+  "dependencies": {
+    "express": "4.18.2"
+  },
+  "devDependencies": {
+    "@types/express": "4.17.21"
+  }
+}
