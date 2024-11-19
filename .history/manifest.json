@@ -1,0 +1,663 @@
+{
+ "component": "mock-external",
+ "commits": [
+  {
+   "date": "2020-10-19T00:00:00",
+   "author": "e.castellanos",
+   "message": "PLAT-1180 scaffold local-stubs: express harness shared by the service teams",
+   "paths": [
+    "mock-external/.editorconfig",
+    "mock-external/.gitattributes",
+    "mock-external/.gitignore",
+    "mock-external/.nvmrc",
+    "mock-external/.npmrc",
+    "mock-external/package.json",
+    "mock-external/tsconfig.base.json",
+    "mock-external/lib/mock-kit/package.json",
+    "mock-external/lib/mock-kit/tsconfig.json",
+    "mock-external/lib/mock-kit/src/index.ts"
+   ]
+  },
+  {
+   "date": "2020-10-21T00:00:00",
+   "author": "e.castellanos",
+   "message": "PLAT-1180 eslint config, same ruleset as bff-retail",
+   "paths": [
+    "mock-external/.eslintrc.json"
+   ]
+  },
+  {
+   "date": "2020-10-27T00:00:00",
+   "author": "g.mwangi",
+   "message": "PLAT-1188 keystone stub: discovery document and a static JWKS",
+   "paths": [
+    "mock-external/keystone-idp-mock/package.json",
+    "mock-external/keystone-idp-mock/tsconfig.json",
+    "mock-external/keystone-idp-mock/src/main.ts",
+    "mock-external/keystone-idp-mock/src/keys.ts",
+    "mock-external/keystone-idp-mock/src/clients.ts"
+   ]
+  },
+  {
+   "date": "2020-11-03T00:00:00",
+   "author": "g.mwangi",
+   "message": "PLAT-1188 authorization code flow with the fixture users and a login page",
+   "paths": [
+    "mock-external/keystone-idp-mock/src/users.ts",
+    "mock-external/keystone-idp-mock/src/pages.ts",
+    "mock-external/keystone-idp-mock/src/server.ts"
+   ]
+  },
+  {
+   "date": "2020-11-05T00:00:00",
+   "author": "o.lindqvist",
+   "message": "PLAT-1191 PKCE S256 on /authorize and /token, retail-web SPA needs it",
+   "paths": [
+    "mock-external/keystone-idp-mock/src/pkce-flow.spec.ts",
+    "mock-external/jest.config.js",
+    "mock-external/tsconfig.jest.json"
+   ]
+  },
+  {
+   "date": "2020-11-12T00:00:00",
+   "author": "a.balaraman",
+   "message": "PLAT-1194 semaphore flag stub for the four flags retail is gating on",
+   "paths": [
+    "mock-external/semaphore-flags-mock/package.json",
+    "mock-external/semaphore-flags-mock/tsconfig.json",
+    "mock-external/semaphore-flags-mock/src/main.ts",
+    "mock-external/semaphore-flags-mock/src/server.ts"
+   ]
+  },
+  {
+   "date": "2020-11-24T00:00:00",
+   "author": "e.castellanos",
+   "message": "PLAT-1180 CODEOWNERS and CONTRIBUTING for local-stubs",
+   "paths": [
+    "mock-external/CODEOWNERS",
+    "mock-external/CONTRIBUTING.md"
+   ]
+  },
+  {
+   "date": "2020-12-02T00:00:00",
+   "author": "e.castellanos",
+   "message": "Merge branch 'release/2020.12' into develop for local-stubs 0.3.0",
+   "empty": true
+  },
+  {
+   "date": "2021-01-19T00:00:00",
+   "author": "a.balaraman",
+   "message": "PLAT-1240 bedrock-core-mock: fixed width ACCTINQ/CUSTACCT per the copybooks",
+   "paths": [
+    "mock-external/bedrock-core-mock/package.json",
+    "mock-external/bedrock-core-mock/tsconfig.json",
+    "mock-external/bedrock-core-mock/src/messages.ts",
+    "mock-external/bedrock-core-mock/src/ledger.ts",
+    "mock-external/bedrock-core-mock/src/main.ts"
+   ]
+  },
+  {
+   "date": "2021-01-21T00:00:00",
+   "author": "a.balaraman",
+   "message": "PLAT-1240 zoned decimal overpunch decoder with tests, the S9(13)V99 fields",
+   "paths": [
+    "mock-external/bedrock-core-mock/src/messages.spec.ts",
+    "mock-external/jest.config.js",
+    "mock-external/tsconfig.jest.json"
+   ]
+  },
+  {
+   "date": "2021-01-26T00:00:00",
+   "author": "a.balaraman",
+   "message": "PLAT-1243 BEDROCK.REQ/RESP transport: in process queues, STOMP bridge to Artemis",
+   "paths": [
+    "mock-external/bedrock-core-mock/src/transport.ts",
+    "mock-external/bedrock-core-mock/src/roundtrip.spec.ts"
+   ]
+  },
+  {
+   "date": "2021-02-02T00:00:00",
+   "author": "e.castellanos",
+   "message": "PLAT-1243 REST facade on 4600 for poking the ledger",
+   "paths": [
+    "mock-external/bedrock-core-mock/src/server.ts"
+   ]
+  },
+  {
+   "date": "2021-02-09T00:00:00",
+   "author": "a.balaraman",
+   "message": "PLAT-1251 TRANPOST and TRANLIST, ASRA on malformed zoned decimal, AEY9 on unknown function",
+   "empty": true
+  },
+  {
+   "date": "2021-02-16T00:00:00",
+   "author": "a.balaraman",
+   "message": "PLAT-1255 simulated end of day batch every few minutes with a report file",
+   "empty": true
+  },
+  {
+   "date": "2021-02-18T00:00:00",
+   "author": "a.balaraman",
+   "message": "Revert \"PLAT-1255 simulated end of day batch every few minutes with a report file\"",
+   "empty": true
+  },
+  {
+   "date": "2021-02-19T00:00:00",
+   "author": "a.balaraman",
+   "message": "PLAT-1255 end of day batch, again, interest posting no longer double counts pending",
+   "empty": true
+  },
+  {
+   "date": "2021-03-03T00:00:00",
+   "author": "e.castellanos",
+   "message": "Merge branch 'release/2021.03' into develop for local-stubs 0.6.0",
+   "empty": true
+  },
+  {
+   "date": "2021-03-16T00:00:00",
+   "author": "o.lindqvist",
+   "message": "PLAT-1268 keystone MFA step (123456), amr and mfa_at claims for the step up guard",
+   "empty": true
+  },
+  {
+   "date": "2021-03-30T00:00:00",
+   "author": "g.mwangi",
+   "message": "PLAT-1271 SAML stub for the legacy wealth portal nobody has found yet",
+   "paths": [
+    "mock-external/keystone-idp-mock/src/saml.ts"
+   ]
+  },
+  {
+   "date": "2021-04-13T00:00:00",
+   "author": "e.castellanos",
+   "message": "PLAT-1280 splunk HEC stub: token check, NDJSON under data/, search by correlationId",
+   "paths": [
+    "mock-external/splunk-hec-mock/package.json",
+    "mock-external/splunk-hec-mock/tsconfig.json",
+    "mock-external/splunk-hec-mock/src/main.ts",
+    "mock-external/splunk-hec-mock/src/server.ts"
+   ]
+  },
+  {
+   "date": "2021-04-20T00:00:00",
+   "author": "meridian-dependency-bot",
+   "message": "PLAT-1100 bump express to 4.17.1 across the stubs",
+   "empty": true
+  },
+  {
+   "date": "2021-05-11T00:00:00",
+   "author": "c.mbeki",
+   "message": "GIS-2021-042 keystone stub: reject redirect_uri not registered on the client, was echoing it back",
+   "empty": true
+  },
+  {
+   "date": "2021-06-01T00:00:00",
+   "author": "e.castellanos",
+   "message": "Merge branch 'release/2021.06' into develop for local-stubs 0.9.0",
+   "empty": true
+  },
+  {
+   "date": "2021-06-15T00:00:00",
+   "author": "a.balaraman",
+   "message": "PLAT-1302 ldap stub with ou=staff and beacon-admins / gis-reviewers groups",
+   "paths": [
+    "mock-external/ldap-mock/package.json",
+    "mock-external/ldap-mock/tsconfig.json",
+    "mock-external/ldap-mock/src/main.ts",
+    "mock-external/ldap-mock/src/directory.ts",
+    "mock-external/ldap-mock/src/server.ts"
+   ]
+  },
+  {
+   "date": "2021-07-06T00:00:00",
+   "author": "e.castellanos",
+   "message": "PLAT-1310 Dockerfiles and a compose file, the Jenkins integration stage wants containers",
+   "paths": [
+    "mock-external/docker-compose.yml",
+    "mock-external/keystone-idp-mock/Dockerfile",
+    "mock-external/keystone-idp-mock/Dockerfile.dockerignore",
+    "mock-external/bedrock-core-mock/Dockerfile",
+    "mock-external/bedrock-core-mock/Dockerfile.dockerignore",
+    "mock-external/semaphore-flags-mock/Dockerfile",
+    "mock-external/semaphore-flags-mock/Dockerfile.dockerignore",
+    "mock-external/splunk-hec-mock/Dockerfile",
+    "mock-external/splunk-hec-mock/Dockerfile.dockerignore",
+    "mock-external/ldap-mock/Dockerfile",
+    "mock-external/ldap-mock/Dockerfile.dockerignore"
+   ]
+  },
+  {
+   "date": "2021-07-20T00:00:00",
+   "author": "e.castellanos",
+   "message": "PLAT-1312 redpanda and redis in compose, notes on the in process fallbacks",
+   "paths": [
+    "mock-external/infra/redpanda/README.md"
+   ]
+  },
+  {
+   "date": "2021-08-10T00:00:00",
+   "author": "a.balaraman",
+   "message": "PLAT-1315 artemis in compose with the four queues, ibm-mq behind a profile",
+   "paths": [
+    "mock-external/infra/artemis/README.md",
+    "mock-external/infra/ibm-mq/20-estate-queues.mqsc"
+   ]
+  },
+  {
+   "date": "2021-09-07T00:00:00",
+   "author": "e.castellanos",
+   "message": "Merge branch 'release/2021.09' into develop for local-stubs 1.0.0",
+   "empty": true
+  },
+  {
+   "date": "2021-09-21T00:00:00",
+   "author": "meridian-dependency-bot",
+   "message": "PLAT-1100 bump typescript to 4.4.3",
+   "empty": true
+  },
+  {
+   "date": "2021-10-12T00:00:00",
+   "author": "f.adeyemi",
+   "message": "PLAT-1330 lantern collector stub and a fake lantern.min.js so retail-web stops calling the vendor from dev",
+   "paths": [
+    "mock-external/lantern-collector-mock/package.json",
+    "mock-external/lantern-collector-mock/tsconfig.json",
+    "mock-external/lantern-collector-mock/src/main.ts",
+    "mock-external/lantern-collector-mock/src/server.ts",
+    "mock-external/lantern-collector-mock/static/lantern.js",
+    "mock-external/lantern-collector-mock/Dockerfile",
+    "mock-external/lantern-collector-mock/Dockerfile.dockerignore"
+   ]
+  },
+  {
+   "date": "2021-11-16T00:00:00",
+   "author": "e.castellanos",
+   "message": "PLAT-1338 verdaccio as the local Artifactory: anonymous read, one publisher, npm uplink",
+   "paths": [
+    "mock-external/verdaccio/config.yaml",
+    "mock-external/verdaccio/htpasswd",
+    "mock-external/verdaccio/.gitignore",
+    "mock-external/verdaccio/README.md",
+    "mock-external/verdaccio/Dockerfile",
+    "mock-external/scripts/verdaccio-up.sh"
+   ]
+  },
+  {
+   "date": "2021-11-30T00:00:00",
+   "author": "e.castellanos",
+   "message": "PLAT-1338 publish-internal.sh for domain-fixtures and canopy-ui",
+   "paths": [
+    "mock-external/scripts/publish-internal.sh"
+   ]
+  },
+  {
+   "date": "2021-12-07T00:00:00",
+   "author": "e.castellanos",
+   "message": "Merge branch 'release/2021.12' into develop for local-stubs 1.2.0",
+   "empty": true
+  },
+  {
+   "date": "2022-01-18T00:00:00",
+   "author": "d.okafor",
+   "message": "PLAT-1402 aggregio stub: institution search, link token, accounts and balances",
+   "paths": [
+    "mock-external/aggregio-mock/package.json",
+    "mock-external/aggregio-mock/tsconfig.json",
+    "mock-external/aggregio-mock/src/main.ts",
+    "mock-external/aggregio-mock/src/server.ts",
+    "mock-external/aggregio-mock/Dockerfile",
+    "mock-external/aggregio-mock/Dockerfile.dockerignore"
+   ]
+  },
+  {
+   "date": "2022-02-01T00:00:00",
+   "author": "d.okafor",
+   "message": "PLAT-1402 aggregio balance-update webhook with a debug list of deliveries",
+   "empty": true
+  },
+  {
+   "date": "2022-02-22T00:00:00",
+   "author": "t.nakamura",
+   "message": "PLAT-1418 tickerhaus stub: FX pairs, index quotes, SSE ticks",
+   "paths": [
+    "mock-external/tickerhaus-mock/package.json",
+    "mock-external/tickerhaus-mock/tsconfig.json",
+    "mock-external/tickerhaus-mock/src/main.ts",
+    "mock-external/tickerhaus-mock/src/server.ts",
+    "mock-external/tickerhaus-mock/Dockerfile",
+    "mock-external/tickerhaus-mock/Dockerfile.dockerignore"
+   ]
+  },
+  {
+   "date": "2022-03-01T00:00:00",
+   "author": "e.castellanos",
+   "message": "Merge branch 'release/2022.03' into develop for local-stubs 1.4.0",
+   "empty": true
+  },
+  {
+   "date": "2022-03-15T00:00:00",
+   "author": "t.nakamura",
+   "message": "LDG-2140 deliberately slow quotes endpoint to reproduce the treasury dashboard timeout",
+   "empty": true
+  },
+  {
+   "date": "2022-04-05T00:00:00",
+   "author": "k.subramani",
+   "message": "PLAT-1431 triscore stub: deterministic score from the customer id, KBA questions",
+   "paths": [
+    "mock-external/triscore-mock/package.json",
+    "mock-external/triscore-mock/tsconfig.json",
+    "mock-external/triscore-mock/src/main.ts",
+    "mock-external/triscore-mock/src/server.ts",
+    "mock-external/triscore-mock/Dockerfile",
+    "mock-external/triscore-mock/Dockerfile.dockerignore"
+   ]
+  },
+  {
+   "date": "2022-05-10T00:00:00",
+   "author": "j.hollins",
+   "message": "PLAT-1447 paylink stub: contact lookup, send with idempotency keys",
+   "paths": [
+    "mock-external/paylink-network-mock/package.json",
+    "mock-external/paylink-network-mock/tsconfig.json",
+    "mock-external/paylink-network-mock/src/main.ts",
+    "mock-external/paylink-network-mock/src/server.ts",
+    "mock-external/paylink-network-mock/Dockerfile",
+    "mock-external/paylink-network-mock/Dockerfile.dockerignore"
+   ]
+  },
+  {
+   "date": "2022-05-17T00:00:00",
+   "author": "p.venkatesan",
+   "message": "PLAT-1449 paylink request money and the settlement webhook",
+   "empty": true
+  },
+  {
+   "date": "2022-05-24T00:00:00",
+   "author": "meridian-dependency-bot",
+   "message": "PLAT-1100 bump express to 4.18.1 across the stubs",
+   "empty": true
+  },
+  {
+   "date": "2022-06-07T00:00:00",
+   "author": "e.castellanos",
+   "message": "Merge branch 'release/2022.06' into develop for local-stubs 1.6.0",
+   "empty": true
+  },
+  {
+   "date": "2022-06-21T00:00:00",
+   "author": "a.balaraman",
+   "message": "PLAT-1460 vault stub: KV v2, token auth, policies, seeded with the CHANGEME placeholders",
+   "paths": [
+    "mock-external/vault-mock/package.json",
+    "mock-external/vault-mock/tsconfig.json",
+    "mock-external/vault-mock/src/main.ts",
+    "mock-external/vault-mock/src/server.ts",
+    "mock-external/vault-mock/Dockerfile",
+    "mock-external/vault-mock/Dockerfile.dockerignore"
+   ]
+  },
+  {
+   "date": "2022-07-12T00:00:00",
+   "author": "v.orlova",
+   "message": "GIS-2022-071 vault stub was logging secret values at debug, redact before write",
+   "empty": true
+  },
+  {
+   "date": "2022-08-16T00:00:00",
+   "author": "e.castellanos",
+   "message": "PLAT-1471 rename local-stubs to mock-external, one directory per external system",
+   "empty": true
+  },
+  {
+   "date": "2022-09-06T00:00:00",
+   "author": "e.castellanos",
+   "message": "Merge branch 'release/2022.09' into develop for mock-external 2.0.0",
+   "empty": true
+  },
+  {
+   "date": "2022-09-20T00:00:00",
+   "author": "meridian-dependency-bot",
+   "message": "PLAT-1100 bump jest to 29.0.3, ts-jest to 29.0.1",
+   "empty": true
+  },
+  {
+   "date": "2022-10-11T00:00:00",
+   "author": "a.balaraman",
+   "message": "PLAT-1488 semaphore-client: tiny typed client so the Node services stop hand rolling fetches",
+   "paths": [
+    "mock-external/lib/semaphore-client/package.json",
+    "mock-external/lib/semaphore-client/tsconfig.json",
+    "mock-external/lib/semaphore-client/src/index.ts"
+   ]
+  },
+  {
+   "date": "2022-11-08T00:00:00",
+   "author": "e.castellanos",
+   "message": "PLAT-1490 correlation id and structured logs in mock-kit, splunk wants them",
+   "empty": true
+  },
+  {
+   "date": "2022-12-06T00:00:00",
+   "author": "e.castellanos",
+   "message": "Merge branch 'release/2022.12' into develop for mock-external 2.1.0",
+   "empty": true
+  },
+  {
+   "date": "2023-01-24T00:00:00",
+   "author": "meridian-dependency-bot",
+   "message": "PLAT-1100 bump @types/node to 18.11.18",
+   "empty": true
+  },
+  {
+   "date": "2023-02-07T00:00:00",
+   "author": "e.castellanos",
+   "message": "PLAT-1510 move mock-external to node 18.19.0, .nvmrc and engines",
+   "empty": true
+  },
+  {
+   "date": "2023-02-21T00:00:00",
+   "author": "w.tanaka",
+   "message": "PLAT-1512 DATA_CLASSIFICATION and SECURITY notes, the mocks are internal-only",
+   "paths": [
+    "mock-external/DATA_CLASSIFICATION.md",
+    "mock-external/SECURITY.md"
+   ]
+  },
+  {
+   "date": "2023-03-07T00:00:00",
+   "author": "e.castellanos",
+   "message": "Merge branch 'release/2023.03' into develop for mock-external 2.3.0",
+   "empty": true
+  },
+  {
+   "date": "2023-03-21T00:00:00",
+   "author": "c.mbeki",
+   "message": "GIS-2023-018 keystone stub: constant time client secret compare, PKCE verifier length check",
+   "empty": true
+  },
+  {
+   "date": "2023-04-18T00:00:00",
+   "author": "a.balaraman",
+   "message": "PLAT-1528 mq-publish.js so smoke can drop events on ACCT.EVENTS without a Java client",
+   "paths": [
+    "mock-external/scripts/mq-publish.js"
+   ]
+  },
+  {
+   "date": "2023-05-16T00:00:00",
+   "author": "e.castellanos",
+   "message": "PLAT-1531 prettier sweep over mock-external, no functional change",
+   "empty": true
+  },
+  {
+   "date": "2023-06-06T00:00:00",
+   "author": "e.castellanos",
+   "message": "Merge branch 'release/2023.06' into develop for mock-external 2.5.0",
+   "empty": true
+  },
+  {
+   "date": "2023-06-20T00:00:00",
+   "author": "e.castellanos",
+   "message": "PLAT-1540 start-all.js daemon mode with a pid file, in process fallback for laptops without Docker",
+   "paths": [
+    "mock-external/scripts/start-all.js"
+   ]
+  },
+  {
+   "date": "2023-08-08T00:00:00",
+   "author": "o.lindqvist",
+   "message": "PLAT-1552 keystone: two keys in JWKS, previous kid kept ninety days like the real thing",
+   "empty": true
+  },
+  {
+   "date": "2023-09-05T00:00:00",
+   "author": "e.castellanos",
+   "message": "Merge branch 'release/2023.09' into develop for mock-external 2.7.0",
+   "empty": true
+  },
+  {
+   "date": "2023-09-19T00:00:00",
+   "author": "meridian-dependency-bot",
+   "message": "PLAT-1100 bump typescript to 5.2.2, eslint to 8.49.0",
+   "empty": true
+  },
+  {
+   "date": "2023-10-17T00:00:00",
+   "author": "a.balaraman",
+   "message": "PLAT-1560 sonar and checkmarx config for the mocks, Jenkins gates apply here too",
+   "paths": [
+    "mock-external/sonar-project.properties",
+    "mock-external/checkmarx.yml"
+   ]
+  },
+  {
+   "date": "2023-11-14T00:00:00",
+   "author": "f.adeyemi",
+   "message": "PLAT-1565 lantern collector: /v1/summary and /v1/events for the DAE dashboards",
+   "empty": true
+  },
+  {
+   "date": "2023-12-05T00:00:00",
+   "author": "e.castellanos",
+   "message": "Merge branch 'release/2023.12' into develop for mock-external 2.8.0",
+   "empty": true
+  },
+  {
+   "date": "2024-01-23T00:00:00",
+   "author": "e.castellanos",
+   "message": "PLAT-2201 estate-up.sh: verdaccio, publish, compose or in process, platform services, port table",
+   "paths": [
+    "mock-external/estate-up.sh"
+   ]
+  },
+  {
+   "date": "2024-01-30T00:00:00",
+   "author": "e.castellanos",
+   "message": "PLAT-2201 estate-down.sh",
+   "paths": [
+    "mock-external/estate-down.sh"
+   ]
+  },
+  {
+   "date": "2024-02-13T00:00:00",
+   "author": "a.balaraman",
+   "message": "PLAT-2210 smoke.sh: keystone PKCE, bff-retail balances, beacon ordering, statement PDF, lantern, splunk trace",
+   "paths": [
+    "mock-external/smoke.sh"
+   ]
+  },
+  {
+   "date": "2024-02-20T00:00:00",
+   "author": "a.balaraman",
+   "message": "PLAT-2210 smoke skips with a warning when a platform service directory is not checked out",
+   "empty": true
+  },
+  {
+   "date": "2024-03-05T00:00:00",
+   "author": "e.castellanos",
+   "message": "Merge branch 'release/2024.03' into develop for mock-external 3.0.0",
+   "empty": true
+  },
+  {
+   "date": "2024-03-19T00:00:00",
+   "author": "meridian-dependency-bot",
+   "message": "PLAT-1100 bump express to 4.18.2, jose to 4.15.4",
+   "empty": true
+  },
+  {
+   "date": "2024-04-16T00:00:00",
+   "author": "e.castellanos",
+   "message": "PLAT-2231 splunk HEC: raw body parser for concatenated JSON from the logback appender",
+   "empty": true
+  },
+  {
+   "date": "2024-05-14T00:00:00",
+   "author": "v.orlova",
+   "message": "GIS-2024-033 splunk and bedrock images run as node, data dirs chowned, no root in compose",
+   "empty": true
+  },
+  {
+   "date": "2024-06-04T00:00:00",
+   "author": "e.castellanos",
+   "message": "Merge branch 'release/2024.06' into develop for mock-external 3.1.0",
+   "empty": true
+  },
+  {
+   "date": "2024-06-18T00:00:00",
+   "author": "a.balaraman",
+   "message": "PLAT-2238 verdaccio image copies config in, storage under /verdaccio/storage (EACCES on publish)",
+   "empty": true
+  },
+  {
+   "date": "2024-07-16T00:00:00",
+   "author": "e.castellanos",
+   "message": "PLAT-2240 keystone listens on all families, curl on IPv6 localhost was getting ECONNREFUSED",
+   "empty": true
+  },
+  {
+   "date": "2024-09-03T00:00:00",
+   "author": "e.castellanos",
+   "message": "Merge branch 'release/2024.09' into develop for mock-external 3.2.0",
+   "empty": true
+  },
+  {
+   "date": "2024-09-17T00:00:00",
+   "author": "e.castellanos",
+   "message": "PLAT-2244 README for mock-external: ports, substitutions, H2 for Oracle and DB2, known issues",
+   "paths": [
+    "mock-external/README.md",
+    "mock-external/.github/pull_request_template.md"
+   ]
+  },
+  {
+   "date": "2024-10-08T00:00:00",
+   "author": "a.balaraman",
+   "message": "PLAT-2244 estate-up sweeps stale in process mocks before compose (PLAT-2705)",
+   "empty": true
+  },
+  {
+   "date": "2024-10-22T00:00:00",
+   "author": "e.castellanos",
+   "message": "PLAT-2244 smoke retries the first keystone authorize (PLAT-2702), verdaccio-up detaches properly (PLAT-2711)",
+   "empty": true
+  },
+  {
+   "date": "2024-11-12T00:00:00",
+   "author": "meridian-dependency-bot",
+   "message": "PLAT-1100 bump typescript to 5.3.3, @types/node to 18.19.31, eslint 8.56.0, lockfile refresh",
+   "paths": [
+    "mock-external/package-lock.json"
+   ]
+  },
+  {
+   "date": "2024-11-19T00:00:00",
+   "author": "e.castellanos",
+   "message": "PLAT-2244 record the history manifest and build log for the estate replay",
+   "paths": [
+    "mock-external/.history/manifest.json",
+    "_demo-notes/build/logs/mock-external.md"
+   ]
+  }
+ ]
+}
