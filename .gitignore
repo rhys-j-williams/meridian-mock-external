@@ -17,3 +17,9 @@ Thumbs.db
 !.env.example
 .cx-reports/
 .scannerwork/
+
+# runtime state written by estate-up.sh and the mocks (PLAT-2244)
+.estate/
+verdaccio/storage/
+splunk-hec-mock/data/
+bedrock-core-mock/data/

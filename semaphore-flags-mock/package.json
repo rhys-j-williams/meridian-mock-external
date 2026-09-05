@@ -1,0 +1,19 @@
+{
+  "name": "@meridian/semaphore-flags-mock",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Semaphore feature flag mock with per environment and per segment flags",
+  "license": "UNLICENSED",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/main.js",
+    "test": "jest --runInBand --rootDir . --config ../jest.config.js"
+  },
+  "dependencies": {
+    "express": "4.18.2"
+  },
+  "devDependencies": {
+    "@types/express": "4.17.21"
+  }
+}
