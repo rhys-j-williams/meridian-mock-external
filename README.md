@@ -218,9 +218,12 @@ start-all.js`, `docker-compose.yml` and the port table in `estate-up.sh`. Ask fo
 
 ## Known issues
 
-- `PLAT-2702` keystone login page occasionally comes back without the `txn` field on the first
-  request after a cold start (seen roughly one run in five in the nightly). Retry passes. Suspect
-  the in-memory transaction store racing the first JWKS generation; not yet pinned down.
+- `PLAT-2702` (closed) keystone login page "occasionally" came back without the `txn` field. It was
+  never keystone: `smoke.sh` passed the PKCE verifier to `node -e` as argv, and when the base64url
+  verifier began with `-` node rejected it as a bad option, the challenge was empty and keystone
+  correctly answered 400 `PKCE required`. The verifier now goes in through the environment. The
+  "cold start" and "one in five" observations were coincidence; the retry loop stays for slow
+  starts only.
 - `PLAT-2705` `estate-up.sh` with Docker does not kill a leftover in-process mock holding one of
   the 46xx ports, so compose fails with `address already in use`. Run `estate-down.sh` first, or
   `lsof -i :4607` and kill it by hand.

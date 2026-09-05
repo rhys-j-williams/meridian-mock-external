@@ -95,10 +95,13 @@ else
   USERNAME=$(printf '%s' "$USERS_JSON" | json 'd[3].username')
   USER_SUB=$(printf '%s' "$USERS_JSON" | json 'd[3].sub')
   VERIFIER=$("$NODE" -e 'process.stdout.write(require("crypto").randomBytes(32).toString("base64url"))')
-  CHALLENGE=$("$NODE" -e 'process.stdout.write(require("crypto").createHash("sha256").update(process.argv[1]).digest("base64url"))' "$VERIFIER")
+  # PLAT-2702: the verifier goes in via the environment, not argv. base64url can start with '-' and
+  # node then reads it as an option ("bad option"), the challenge comes out empty and keystone
+  # answers 400 "PKCE required". That was the "flake": one run in 64, deterministic per verifier.
+  CHALLENGE=$(PKCE_VERIFIER="$VERIFIER" "$NODE" -e 'process.stdout.write(require("crypto").createHash("sha256").update(process.env.PKCE_VERIFIER).digest("base64url"))')
+  if [ -z "$CHALLENGE" ]; then fail "keystone pkce" "could not derive S256 challenge from verifier"; fi
   STATE_P="smoke-$RANDOM"; NONCE="n-$RANDOM"
-  # PLAT-2702: the first authorize after a cold start has come back without the login page once in
-  # a few runs; retry a couple of times and keep the status + body head for the failure message.
+  # Retry kept for genuine cold-start slowness; it does not mask PLAT-2702 any more.
   TXN=""; AUTHZ_HTTP=""; AUTHZ_ATTEMPT=0
   while [ -z "$TXN" ] && [ "$AUTHZ_ATTEMPT" -lt 3 ]; do
     AUTHZ_ATTEMPT=$((AUTHZ_ATTEMPT+1))
