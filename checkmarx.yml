@@ -1,0 +1,21 @@
+# Consumed by the mock cx CLI in platform-tooling/mock-scanners/bin.
+project:
+  name: meridian-mock-external
+  team: /CxServer/Meridian/CSWT
+scan:
+  preset: Meridian-High-And-Medium
+  incremental: false
+  language: typescript
+  source: .
+  exclude:
+    - node_modules
+    - dist
+    - coverage
+    - target
+    - "**/*.spec.ts"
+thresholds:
+  high: 0
+  medium: 5
+report:
+  formats: [json, html]
+  output: .cx-reports
