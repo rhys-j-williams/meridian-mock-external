@@ -1,0 +1,11 @@
+**/node_modules
+**/dist
+**/.angular
+**/target
+**/coverage
+**/storage
+**/data
+.git
+_demo-notes
+
+**/.estate

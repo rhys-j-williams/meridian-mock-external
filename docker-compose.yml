@@ -1,0 +1,265 @@
+# Everything external, locally. `estate-up.sh` drives this; you can also run it by hand:
+#
+#   docker compose up -d                       mocks + verdaccio + redpanda + redis + artemis
+#   docker compose --profile ibm-mq up -d      add the IBM MQ developer image (needs the pull to work)
+#   docker compose --profile local-artemis up  explicit artemis (it is also in the default set)
+#
+# Ports are the ones in PORTS.md. Do not remap them; every env.json in the estate hard codes them.
+# Build contexts are the repo root because of the domain-fixtures file: dependency, see any Dockerfile.
+#
+# Oracle and DB2 are deliberately absent. The Java services run H2 in compatibility mode. README.
+
+name: meridian-estate
+
+x-mock: &mock
+  restart: unless-stopped
+  init: true
+  environment: &mock-env
+    NODE_ENV: production
+    MERIDIAN_FIXTURE_SEED: meridian
+    SPLUNK_HEC_URL: http://splunk-hec-mock:4606/services/collector/event
+    SPLUNK_HEC_TOKEN: CHANGEME-hec-token-mocks
+  networks: [estate]
+
+services:
+  verdaccio:
+    build: ./verdaccio
+    image: meridian/verdaccio:5.29.2
+    container_name: estate-verdaccio
+    restart: unless-stopped
+    ports: ["4873:4873"]
+    volumes:
+      - ./verdaccio/htpasswd:/verdaccio/conf/htpasswd
+      - verdaccio-storage:/verdaccio/storage
+    environment:
+      VERDACCIO_PUBLIC_URL: http://localhost:4873
+    networks: [estate]
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:4873/-/ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+
+  keystone-idp-mock:
+    <<: *mock
+    build: { context: .., dockerfile: mock-external/keystone-idp-mock/Dockerfile }
+    image: meridian/keystone-idp-mock
+    container_name: estate-keystone-idp-mock
+    ports: ["4400:4400"]
+    environment:
+      <<: *mock-env
+      KEYSTONE_IDP_PORT: "4400"
+      KEYSTONE_ISSUER: http://localhost:4400
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:4400/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+
+  bedrock-core-mock:
+    <<: *mock
+    build: { context: .., dockerfile: mock-external/bedrock-core-mock/Dockerfile }
+    image: meridian/bedrock-core-mock
+    container_name: estate-bedrock-core-mock
+    ports: ["4600:4600"]
+    environment:
+      <<: *mock-env
+      BEDROCK_CORE_PORT: "4600"
+      # STOMP to Artemis (61613) or IBM MQ... MQ has no STOMP; the bedrock-adapter service talks
+      # JMS to MQ and the mock's REST facade is used instead. See README "Bedrock transport".
+      BEDROCK_STOMP_HOST: artemis
+      BEDROCK_STOMP_PORT: "61613"
+      BEDROCK_BATCH_INTERVAL_MINUTES: "5"
+      BEDROCK_BATCH_DIR: /estate/mock-external/bedrock-core-mock/data/batch
+    volumes:
+      - bedrock-batch:/estate/mock-external/bedrock-core-mock/data/batch
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:4600/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+
+  aggregio-mock:
+    <<: *mock
+    build: { context: .., dockerfile: mock-external/aggregio-mock/Dockerfile }
+    image: meridian/aggregio-mock
+    container_name: estate-aggregio-mock
+    ports: ["4601:4601"]
+    environment: { <<: *mock-env, AGGREGIO_PORT: "4601", AGGREGIO_DEFAULT_WEBHOOK: "http://host.docker.internal:4500/webhooks/aggregio" }
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    healthcheck: { test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:4601/health"], interval: 10s, timeout: 3s, retries: 6 }
+
+  tickerhaus-mock:
+    <<: *mock
+    build: { context: .., dockerfile: mock-external/tickerhaus-mock/Dockerfile }
+    image: meridian/tickerhaus-mock
+    container_name: estate-tickerhaus-mock
+    ports: ["4602:4602"]
+    environment: { <<: *mock-env, TICKERHAUS_PORT: "4602" }
+    healthcheck: { test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:4602/health"], interval: 10s, timeout: 3s, retries: 6 }
+
+  triscore-mock:
+    <<: *mock
+    build: { context: .., dockerfile: mock-external/triscore-mock/Dockerfile }
+    image: meridian/triscore-mock
+    container_name: estate-triscore-mock
+    ports: ["4603:4603"]
+    environment: { <<: *mock-env, TRISCORE_PORT: "4603" }
+    healthcheck: { test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:4603/health"], interval: 10s, timeout: 3s, retries: 6 }
+
+  paylink-network-mock:
+    <<: *mock
+    build: { context: .., dockerfile: mock-external/paylink-network-mock/Dockerfile }
+    image: meridian/paylink-network-mock
+    container_name: estate-paylink-network-mock
+    ports: ["4604:4604"]
+    environment: { <<: *mock-env, PAYLINK_PORT: "4604", PAYLINK_DEFAULT_WEBHOOK: "http://host.docker.internal:4500/webhooks/paylink" }
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    healthcheck: { test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:4604/health"], interval: 10s, timeout: 3s, retries: 6 }
+
+  vault-mock:
+    <<: *mock
+    build: { context: .., dockerfile: mock-external/vault-mock/Dockerfile }
+    image: meridian/vault-mock
+    container_name: estate-vault-mock
+    ports: ["4605:4605"]
+    environment: { <<: *mock-env, VAULT_PORT: "4605", VAULT_DEV_ROOT_TOKEN_ID: CHANGEME-vault-root-token }
+    healthcheck: { test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:4605/health"], interval: 10s, timeout: 3s, retries: 6 }
+
+  splunk-hec-mock:
+    <<: *mock
+    build: { context: .., dockerfile: mock-external/splunk-hec-mock/Dockerfile }
+    image: meridian/splunk-hec-mock
+    container_name: estate-splunk-hec-mock
+    ports: ["4606:4606"]
+    environment: { <<: *mock-env, SPLUNK_HEC_PORT: "4606", HEC_DATA_DIR: /estate/mock-external/splunk-hec-mock/data, HEC_TOKENS: "CHANGEME-hec-token,CHANGEME-hec-token-mocks" }
+    volumes:
+      - hec-data:/estate/mock-external/splunk-hec-mock/data
+    healthcheck: { test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:4606/health"], interval: 10s, timeout: 3s, retries: 6 }
+
+  lantern-collector-mock:
+    <<: *mock
+    build: { context: .., dockerfile: mock-external/lantern-collector-mock/Dockerfile }
+    image: meridian/lantern-collector-mock
+    container_name: estate-lantern-collector-mock
+    ports: ["4607:4607"]
+    environment: { <<: *mock-env, LANTERN_COLLECTOR_PORT: "4607" }
+    healthcheck: { test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:4607/health"], interval: 10s, timeout: 3s, retries: 6 }
+
+  semaphore-flags-mock:
+    <<: *mock
+    build: { context: .., dockerfile: mock-external/semaphore-flags-mock/Dockerfile }
+    image: meridian/semaphore-flags-mock
+    container_name: estate-semaphore-flags-mock
+    ports: ["4608:4608"]
+    environment: { <<: *mock-env, SEMAPHORE_PORT: "4608" }
+    healthcheck: { test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:4608/health"], interval: 10s, timeout: 3s, retries: 6 }
+
+  ldap-mock:
+    <<: *mock
+    build: { context: .., dockerfile: mock-external/ldap-mock/Dockerfile }
+    image: meridian/ldap-mock
+    container_name: estate-ldap-mock
+    ports: ["4609:4609", "14609:14609"]
+    environment: { <<: *mock-env, LDAP_PORT: "4609", LDAP_HTTP_PORT: "14609" }
+    healthcheck: { test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:14609/health"], interval: 10s, timeout: 3s, retries: 6 }
+
+  # ---- infrastructure -------------------------------------------------------------------------
+
+  redpanda:
+    image: redpandadata/redpanda:v23.3.5
+    container_name: estate-redpanda
+    restart: unless-stopped
+    command:
+      - redpanda start
+      - --smp 1
+      - --memory 512M
+      - --overprovisioned
+      - --node-id 0
+      - --kafka-addr PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
+      - --advertise-kafka-addr PLAINTEXT://redpanda:29092,OUTSIDE://localhost:9092
+      - --set redpanda.auto_create_topics_enabled=true
+    ports: ["9092:9092"]
+    networks: [estate]
+    healthcheck:
+      test: ["CMD-SHELL", "rpk cluster health | grep -q 'Healthy:.*true'"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redpanda-topics:
+    # creates the topics the platform services expect, then exits. Idempotent.
+    image: redpandadata/redpanda:v23.3.5
+    depends_on:
+      redpanda: { condition: service_healthy }
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        for t in ACCT.EVENTS BEACON.OUT BEACON.DLQ AUDIT.TRAIL TXN.POSTED; do
+          rpk topic create "$$t" --brokers redpanda:29092 -p 3 2>/dev/null || true
+        done
+        rpk topic list --brokers redpanda:29092
+    networks: [estate]
+
+  redis:
+    image: redis:7.2.4-alpine
+    container_name: estate-redis
+    restart: unless-stopped
+    command: ["redis-server", "--save", "", "--appendonly", "no", "--requirepass", "CHANGEME-redis-password"]
+    ports: ["6379:6379"]
+    networks: [estate]
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "CHANGEME-redis-password", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+
+  artemis:
+    # Fallback for IBM MQ. Spring profile `local-artemis` in the Java services points here.
+    # Also the STOMP endpoint bedrock-core-mock uses, since the MQ developer image has no STOMP.
+    image: apache/activemq-artemis:2.31.2-alpine
+    container_name: estate-artemis
+    restart: unless-stopped
+    environment:
+      ARTEMIS_USER: artemis
+      ARTEMIS_PASSWORD: CHANGEME-artemis
+      ANONYMOUS_LOGIN: "false"
+      EXTRA_ARGS: --http-host 0.0.0.0 --relax-jolokia --queues ACCT.EVENTS,BEACON.OUT,BEDROCK.REQ,BEDROCK.RESP --addresses ACCT.EVENTS,BEACON.OUT,BEDROCK.REQ,BEDROCK.RESP
+    ports:
+      - "61616:61616"
+      - "61613:61613"
+      - "8161:8161"
+    networks: [estate]
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8161/console/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+
+  ibm-mq:
+    # Only with --profile ibm-mq. The image is large and the pull fails on the build agents
+    # behind the proxy (PLAT-2301), hence Artemis as the default.
+    image: icr.io/ibm-messaging/mq:9.3.4.1-r1
+    container_name: estate-ibm-mq
+    profiles: [ibm-mq]
+    restart: unless-stopped
+    environment:
+      LICENSE: accept
+      MQ_QMGR_NAME: MTBQM01
+      MQ_APP_PASSWORD: CHANGEME-mq-app-password
+      MQ_ADMIN_PASSWORD: CHANGEME-mq-admin-password
+    ports:
+      - "1414:1414"
+      - "9443:9443"
+    volumes:
+      - ./infra/ibm-mq/20-estate-queues.mqsc:/etc/mqm/20-estate-queues.mqsc:ro
+    networks: [estate]
+
+volumes:
+  verdaccio-storage:
+  hec-data:
+  bedrock-batch:
+
+networks:
+  estate:
+    name: meridian-estate

@@ -1,0 +1,14 @@
+* Queues the estate expects on MTBQM01. Loaded by the developer image at start-up.
+* Mirrors platform-tooling/mq/MTBQM01.mqsc from the real queue manager definitions, minus the
+* cluster and channel auth records, which do not apply to a single developer container.
+DEFINE QLOCAL('ACCT.EVENTS')   MAXDEPTH(50000) DEFPSIST(YES) DESCR('Account event fan-out, consumed by beacon-notifications') REPLACE
+DEFINE QLOCAL('BEACON.OUT')    MAXDEPTH(50000) DEFPSIST(YES) DESCR('Beacon channel dispatch') REPLACE
+DEFINE QLOCAL('BEACON.DLQ')    MAXDEPTH(50000) DEFPSIST(YES) DESCR('Beacon dead letter') REPLACE
+DEFINE QLOCAL('BEDROCK.REQ')   MAXDEPTH(10000) DEFPSIST(NO)  DESCR('Bedrock fixed width requests, MTBREQ copybook') REPLACE
+DEFINE QLOCAL('BEDROCK.RESP')  MAXDEPTH(10000) DEFPSIST(NO)  DESCR('Bedrock fixed width replies, MTBRESP copybook') REPLACE
+* the developer image already has DEV.APP.SVRCONN and DEV.ADMIN.SVRCONN
+SET AUTHREC PROFILE('ACCT.EVENTS')  OBJTYPE(QUEUE) PRINCIPAL('app') AUTHADD(PUT,GET,INQ,BROWSE)
+SET AUTHREC PROFILE('BEACON.OUT')   OBJTYPE(QUEUE) PRINCIPAL('app') AUTHADD(PUT,GET,INQ,BROWSE)
+SET AUTHREC PROFILE('BEACON.DLQ')   OBJTYPE(QUEUE) PRINCIPAL('app') AUTHADD(PUT,GET,INQ,BROWSE)
+SET AUTHREC PROFILE('BEDROCK.REQ')  OBJTYPE(QUEUE) PRINCIPAL('app') AUTHADD(PUT,GET,INQ,BROWSE)
+SET AUTHREC PROFILE('BEDROCK.RESP') OBJTYPE(QUEUE) PRINCIPAL('app') AUTHADD(PUT,GET,INQ,BROWSE)
