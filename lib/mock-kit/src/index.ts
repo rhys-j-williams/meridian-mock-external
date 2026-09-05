@@ -46,7 +46,9 @@ const HEC_URL = process.env.SPLUNK_HEC_URL || '';
 const HEC_TOKEN = process.env.SPLUNK_HEC_TOKEN || 'CHANGEME-hec-token-mocks';
 
 function forwardToHec(service: string, line: Record<string, unknown>): void {
-  if (!HEC_URL) {
+  // The collector must not ship its own access log to itself: every forwarded event is a
+  // request, which is another event (PLAT-2721).
+  if (!HEC_URL || service === 'splunk-hec-mock') {
     return;
   }
   try {

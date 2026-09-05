@@ -161,7 +161,7 @@ else
     fail "bff-retail accounts" "HTTP $HTTP, $COUNT accounts: $(printf '%s' "$BODY" | head -c 200)"
   else
     # cross-check against the ledger: the first account's balance must match what Bedrock holds
-    BFF_BAL=$(printf '%s' "$BODY" | json 'const a=(Array.isArray(d)?d:(d.accounts||d.items||d.data||[]))[0]; a.currentBalanceMinor ?? a.balanceMinor ?? Math.round(Number(a.currentBalance ?? a.balance ?? 0)*100)')
+    BFF_BAL=$(printf '%s' "$BODY" | json 'const a=(Array.isArray(d)?d:(d.accounts||d.items||d.data||[]))[0]; const b=a.currentBalance ?? a.balance; a.currentBalanceMinor ?? a.balanceMinor ?? (b && typeof b === "object" ? b.minor : Math.round(Number(b ?? 0)*100))')
     LEDGER_BAL=$(curl -s "$BEDROCK_URL/debug/accounts/$ACCOUNT_ID" | json 'd.currentBalanceMinor' 2>/dev/null || true)
     if [ -n "$LEDGER_BAL" ] && [ "$BFF_BAL" = "$LEDGER_BAL" ]; then
       pass "bff-retail returned $COUNT accounts, balance of $ACCOUNT_ID matches Bedrock ($LEDGER_BAL minor)"

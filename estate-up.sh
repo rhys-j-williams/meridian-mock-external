@@ -12,7 +12,7 @@
 #   ESTATE_SKIP_PUBLISH=1     skip step 2 (registry already populated)
 #   ESTATE_SKIP_SERVICES=1    mocks only, do not start platform-services
 #   ESTATE_SERVICES="bff-retail bedrock-adapter"   subset of platform services to start
-#   ESTATE_WAIT_SECS=90       how long to wait for health before giving up on a service (still
+#   ESTATE_WAIT_SECS=180      how long to wait for health before giving up on a service (still
 #                             continues; the table says which ones did not answer)
 #
 # Anything under ../platform-services that is not present in this checkout is skipped with a
@@ -27,7 +27,7 @@ REPO_ROOT="$(cd "$HERE/.." && pwd)"
 STATE="$HERE/.estate"
 LOGS="$STATE/logs"
 SERVICES_ROOT="$REPO_ROOT/platform-services"
-WAIT_SECS="${ESTATE_WAIT_SECS:-90}"
+WAIT_SECS="${ESTATE_WAIT_SECS:-180}"
 mkdir -p "$LOGS"
 
 bold()  { printf '\033[1m%s\033[0m\n' "$*"; }
@@ -192,17 +192,21 @@ export KEYSTONE_ISSUER="${KEYSTONE_ISSUER:-http://localhost:4400}"
 export KEYSTONE_JWKS_URI="${KEYSTONE_JWKS_URI:-http://localhost:4400/.well-known/jwks.json}"
 export SPLUNK_HEC_URL="${SPLUNK_HEC_URL:-http://localhost:4606/services/collector/event}"
 export SPLUNK_HEC_TOKEN="${SPLUNK_HEC_TOKEN:-CHANGEME-hec-token}"
+# No filebeat sidecar outside the cluster: the Node BFFs post to HEC themselves (INC0048817).
+export MERIDIAN_HEC_DIRECT="${MERIDIAN_HEC_DIRECT:-true}"
 export VAULT_ADDR="${VAULT_ADDR:-http://localhost:4605}"
 export VAULT_TOKEN="${VAULT_TOKEN:-CHANGEME-vault-root-token}"
 export SEMAPHORE_URL="${SEMAPHORE_URL:-http://localhost:4608}"
 export BEDROCK_CORE_URL="${BEDROCK_CORE_URL:-http://localhost:4600}"
-export BEDROCK_ADAPTER_URL="${BEDROCK_ADAPTER_URL:-http://localhost:4516}"
+# Adapter base includes its servlet path; the BFFs append /customers/... to it (PLAT-2719).
+export BEDROCK_ADAPTER_URL="${BEDROCK_ADAPTER_URL:-http://localhost:4516/bedrock/v1}"
 export AGGREGIO_URL="${AGGREGIO_URL:-http://localhost:4601}"
 export TICKERHAUS_URL="${TICKERHAUS_URL:-http://localhost:4602}"
 export TRISCORE_URL="${TRISCORE_URL:-http://localhost:4603}"
 export PAYLINK_URL="${PAYLINK_URL:-http://localhost:4604}"
 export LANTERN_COLLECTOR_URL="${LANTERN_COLLECTOR_URL:-http://localhost:4607}"
-export STATEMENTS_API_URL="${STATEMENTS_API_URL:-http://localhost:4519}"
+# 127.0.0.1, not localhost: Node 18 resolves localhost to ::1 first and uvicorn only binds v4 (PLAT-2720).
+export STATEMENTS_API_URL="${STATEMENTS_API_URL:-http://127.0.0.1:4519}"
 export REDIS_URL="${REDIS_URL:-redis://localhost:6379}"
 export KAFKA_BOOTSTRAP_SERVERS="${KAFKA_BOOTSTRAP_SERVERS:-localhost:9092}"
 if [ "$MODE" = "docker" ]; then
@@ -274,29 +278,53 @@ start_service() { # name port kind
   SERVICE_ROWS+=("$name|$port|starting")
 }
 
+health_wait() { # /health, /actuator/health, /healthz, whichever answers; the clock runs once, not per service
+  local deadline=$((SECONDS + WAIT_SECS))
+  for i in "${!SERVICE_ROWS[@]}"; do
+    IFS='|' read -r name port status <<<"${SERVICE_ROWS[$i]}"
+    [ "$status" = "starting" ] || continue
+    ok=0
+    while :; do
+      for path in /health /actuator/health /healthz /api/v1/health; do
+        if curl -fs -o /dev/null --max-time 2 "http://localhost:$port$path"; then ok=1; break 2; fi
+      done
+      [ $SECONDS -lt $deadline ] || break
+      sleep 1
+    done
+    if [ $ok = 1 ]; then SERVICE_ROWS[$i]="$name|$port|up"; else SERVICE_ROWS[$i]="$name|$port|NOT ANSWERING (see logs)"; fi
+  done
+}
+
 if [ "${ESTATE_SKIP_SERVICES:-0}" = "1" ]; then
   log "ESTATE_SKIP_SERVICES=1, not starting platform services"
 elif [ ! -d "$SERVICES_ROOT" ]; then
   warn "$SERVICES_ROOT does not exist; no platform services started. Front ends will get 502s from the BFF ports."
+elif [ -x "$SERVICES_ROOT/scripts/run-local.sh" ]; then
+  # PLAT-2706: platform-services owns its own process supervisor; it knows jars vs dist vs venvs
+  # and the start order. We only hand it the mock URLs above and read its pids back for estate-down.
+  log "platform-services: scripts/run-local.sh start ${ESTATE_SERVICES:-}"
+  # shellcheck disable=SC2086
+  if ! "$SERVICES_ROOT/scripts/run-local.sh" start ${ESTATE_SERVICES:-} >>"$LOGS/platform-services.log" 2>&1; then
+    warn "platform-services: run-local.sh reported a problem (jars/dist missing? run 'make -C platform-services install build'); see $LOGS/platform-services.log"
+  fi
+  for entry in "${PLATFORM_SERVICES[@]}"; do
+    IFS=: read -r name port kind <<<"$entry"
+    if [ -n "${ESTATE_SERVICES:-}" ] && ! printf ' %s ' "$ESTATE_SERVICES" | grep -q " $name "; then continue; fi
+    if [ -f "$SERVICES_ROOT/var/$name.pid" ]; then
+      echo "$name $(cat "$SERVICES_ROOT/var/$name.pid")" >> "$STATE/service-pids"
+      SERVICE_ROWS+=("$name|$port|starting")
+    else
+      SERVICE_ROWS+=("$name|$port|NOT STARTED (see $LOGS/platform-services.log)")
+    fi
+  done
+  health_wait
 else
   for entry in "${PLATFORM_SERVICES[@]}"; do
     IFS=: read -r name port kind <<<"$entry"
     if [ -n "${ESTATE_SERVICES:-}" ] && ! printf ' %s ' "$ESTATE_SERVICES" | grep -q " $name "; then continue; fi
     start_service "$name" "$port" "$kind"
   done
-  # health pass: /health, /actuator/health, /healthz, whichever answers
-  for i in "${!SERVICE_ROWS[@]}"; do
-    IFS='|' read -r name port status <<<"${SERVICE_ROWS[$i]}"
-    [ "$status" = "starting" ] || continue
-    ok=0
-    for ((s = 0; s < WAIT_SECS; s++)); do
-      for path in /health /actuator/health /healthz /api/v1/health; do
-        if curl -fs -o /dev/null --max-time 2 "http://localhost:$port$path"; then ok=1; break 2; fi
-      done
-      sleep 1
-    done
-    if [ $ok = 1 ]; then SERVICE_ROWS[$i]="$name|$port|up"; else SERVICE_ROWS[$i]="$name|$port|NOT ANSWERING (see .estate/logs/$name.log)"; fi
-  done
+  health_wait
 fi
 
 # ------------------------------------------------------------------------------------------------

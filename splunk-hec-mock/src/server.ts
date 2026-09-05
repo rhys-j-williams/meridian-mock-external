@@ -79,7 +79,10 @@ export function buildServer(options: { dataDir: string; tokens: string[] }): Moc
     const stored: Stored = {
       ...e, event: ev, receivedAt: new Date().toISOString(), seq,
       correlationId: extract(ev, ['correlationId', 'correlation_id', 'x-correlation-id', 'traceId', 'trace_id']) || extract(e.fields, ['correlationId']),
-      service: extract(ev, ['service', 'app', 'application', 'serviceName']) || e.host || e.source || null,
+      // common-starter and the BFFs put service on the envelope (SplunkHecLayout), the mocks put it
+      // in the event body, raw HEC clients use fields.service.
+      service: extract(ev, ['service', 'app', 'application', 'serviceName'])
+        || extract(e, ['service']) || extract(e.fields, ['service']) || e.host || e.source || null,
       level: extract(ev, ['severity', 'level', 'logLevel'])
     };
     fs.appendFileSync(fileFor(), JSON.stringify(stored) + '\n');

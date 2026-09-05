@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # estate-down.sh - stop whatever estate-up.sh started. Safe to run twice.
 #
-#   --mocks-only     leave platform services alone (estate-up uses this before a restart)
+#   --mocks-only     only the in-process mocks; platform services and the registry are left alone
+#                    (estate-up uses this before a restart, after it has just brought Verdaccio up)
 #   --volumes        also drop the compose volumes (verdaccio storage, HEC data, bedrock reports)
 #   --keep-registry  leave Verdaccio running (handy when iterating on a single mock)
 set -uo pipefail
@@ -10,7 +11,7 @@ STATE="$HERE/.estate"
 MOCKS_ONLY=0; VOLUMES=""; KEEP_REGISTRY=0
 for a in "$@"; do
   case "$a" in
-    --mocks-only) MOCKS_ONLY=1;;
+    --mocks-only) MOCKS_ONLY=1; KEEP_REGISTRY=1;;
     --volumes) VOLUMES="-v";;
     --keep-registry) KEEP_REGISTRY=1;;
     *) echo "unknown flag $a"; exit 2;;
