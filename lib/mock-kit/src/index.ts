@@ -133,7 +133,8 @@ export function createMockApp(service: string, options: MockAppOptions = {}): Mo
     res.setHeader('access-control-allow-origin', req.header('origin') || '*');
     res.setHeader('access-control-allow-credentials', 'true');
     res.setHeader('access-control-allow-headers',
-      'authorization, content-type, x-correlation-id, x-meridian-xsrf, x-lantern-session, x-idempotency-key, x-vault-token');
+      req.header('access-control-request-headers')
+        || 'authorization, content-type, x-correlation-id, x-meridian-xsrf, x-lantern-session, x-idempotency-key, x-vault-token');
     res.setHeader('access-control-allow-methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
     res.setHeader('access-control-expose-headers', 'x-correlation-id');
     if (req.method === 'OPTIONS') {
