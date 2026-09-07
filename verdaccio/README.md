@@ -15,10 +15,9 @@ then publishes whichever of these are present in the checkout, in this order:
 | @meridian/domain-fixtures | platform-services/libs/ts/domain-fixtures | everything depends on it |
 | @meridian/semaphore-client | mock-external/lib/semaphore-client | offline flag evaluation, same algorithm as the mock |
 | @meridian/lantern-sdk | lantern-sdk | built under Node 14, View Engine (LNTN-401) |
-| @meridian/canopy-ui 3.5.0 | canopy-ui (tag canopy-ui-3.5.0) | via canopy-ui/scripts/publish.sh if it exists |
-| @meridian/canopy-ui 3.7.2 | canopy-ui (develop) | same |
+| @meridian/canopy-ui 3.5.0, 3.6.1, 3.7.2 | meridian-canopy-ui repository (tags v3.5.0, v3.6.1, v3.7.2) | via its scripts/publish.sh; checkout found at `CANOPY_REPO`, default `../meridian-canopy-ui` |
 
-Missing directories are skipped with a warning; the other sessions land them on their own branches.
+Missing directories are skipped with a warning.
 Re-publishing the same version is a 409 from Verdaccio; the script treats that as "already there".
 
 If `npm install` in an app resolves `@meridian/*` from public npm you have the wrong `.npmrc`.
