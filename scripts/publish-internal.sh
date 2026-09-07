@@ -94,16 +94,18 @@ if [ -n "$ONLY" ] && ! printf '%s' ",$ONLY," | grep -q ",lantern-sdk,"; then :; 
 else
   warn "lantern-sdk: not present, skipping"; SKIPPED=$((SKIPPED+1))
 fi
-# canopy-ui has its own publish script that handles the two versions (3.5.0 from tag, 3.7.2 head)
-if [ -n "$ONLY" ] && ! printf '%s' ",$ONLY," | grep -q ",canopy-ui,"; then :; elif [ -x "$REPO_ROOT/canopy-ui/scripts/publish.sh" ]; then
-  log "canopy-ui: delegating to canopy-ui/scripts/publish.sh"
-  if ( cd "$REPO_ROOT/canopy-ui" && use_node 16.20.2 && REGISTRY_URL="$REGISTRY_URL" NPM_CONFIG_USERCONFIG="$NPMRC" ./scripts/publish.sh ); then
+# canopy-ui lives in its own repository (meridian-canopy-ui, CNPY-2140). Its publish script walks
+# the release tags the consumers pin (3.5.0, 3.6.1, 3.7.2). Default location is a sibling checkout.
+CANOPY_REPO="${CANOPY_REPO:-$REPO_ROOT/../meridian-canopy-ui}"
+if [ -n "$ONLY" ] && ! printf '%s' ",$ONLY," | grep -q ",canopy-ui,"; then :; elif [ -x "$CANOPY_REPO/scripts/publish.sh" ]; then
+  log "canopy-ui: delegating to $CANOPY_REPO/scripts/publish.sh"
+  if ( cd "$CANOPY_REPO" && use_node 16.20.2 && REGISTRY_URL="$REGISTRY_URL" NPM_CONFIG_USERCONFIG="$NPMRC" ./scripts/publish.sh ); then
     PUBLISHED=$((PUBLISHED+1))
   else
     warn "canopy-ui: publish script failed"; FAILED=$((FAILED+1))
   fi
 else
-  warn "canopy-ui: scripts/publish.sh not present, skipping"; SKIPPED=$((SKIPPED+1))
+  warn "canopy-ui: no checkout at $CANOPY_REPO (clone meridian-canopy-ui next to this repository or set CANOPY_REPO), skipping"; SKIPPED=$((SKIPPED+1))
 fi
 
 log "done: $PUBLISHED published/present, $SKIPPED skipped, $FAILED failed"
