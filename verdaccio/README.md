@@ -14,7 +14,7 @@ then publishes whichever of these are present in the checkout, in this order:
 | --- | --- | --- |
 | @meridian/domain-fixtures | platform-services/libs/ts/domain-fixtures | everything depends on it |
 | @meridian/semaphore-client | mock-external/lib/semaphore-client | offline flag evaluation, same algorithm as the mock |
-| @meridian/lantern-sdk | lantern-sdk | built under Node 14, View Engine (LNTN, T39) |
+| @meridian/lantern-sdk | lantern-sdk | built under Node 14, View Engine (LNTN-401) |
 | @meridian/canopy-ui 3.5.0 | canopy-ui (tag canopy-ui-3.5.0) | via canopy-ui/scripts/publish.sh if it exists |
 | @meridian/canopy-ui 3.7.2 | canopy-ui (develop) | same |
 

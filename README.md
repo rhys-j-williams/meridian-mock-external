@@ -105,8 +105,8 @@ service's `application.yml` references. Placeholders are `CHANGEME-*`, nothing r
 **splunk-hec-mock.** `/services/collector` and `/services/collector/event`, validates
 `Authorization: Splunk <token>` against `HEC_TOKENS`, accepts the concatenated-JSON body format the
 Splunk logback appender sends, writes NDJSON to `data/hec-<date>.ndjson`, and `/search?correlationId=`
-returns every event for one request across services. This is how the demo shows one accounts call
-walking from `bff-retail` to `bedrock-adapter`.
+returns every event for one request across services. This is how the smoke test shows one accounts
+call walking from `bff-retail` to `bedrock-adapter`.
 
 **lantern-collector-mock.** `/v1/batch` and `/v1/track|page|identify`, `/v1/summary`, `/v1/events`, and
 `/lantern.min.js`, a stand-in for the vendor script that exposes `window.Lantern` with

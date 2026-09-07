@@ -218,7 +218,7 @@ else
     elif [ "$result" = "$EXPECTED" ]; then
       pass "beacon dispatched 3 console alerts for $USER_SUB in sequence order"
     else
-      fail "beacon ordering" "got $result, expected $EXPECTED (T44 territory)"
+      fail "beacon ordering" "got $result, expected $EXPECTED (PLAT-2288 territory)"
     fi
   fi
 fi
