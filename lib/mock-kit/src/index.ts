@@ -4,21 +4,21 @@
  * health endpoint, the shared fixture set, and best effort forwarding of log lines to
  * splunk-hec-mock so a request can be traced across mocks in the demo.
  *
- * Not a bank artefact in the real estate; in Meridian these mocks live in the platform
+ * Not a bank artefact in the real estate; in Northgate these mocks live in the platform
  * engineering "sandbox-mocks" repository and this is its `common` module.
  */
 
 import express, { Express, NextFunction, Request, Response } from 'express';
 import * as http from 'http';
 import { randomUUID } from 'crypto';
-import { FixtureSet, generateFixtures } from '@meridian/domain-fixtures';
+import { FixtureSet, generateFixtures } from '@northgate/domain-fixtures';
 
 export { express, Request, Response, NextFunction };
 
 export const CORRELATION_HEADER = 'x-correlation-id';
 
 /** Seed shared by every mock and BFF so that a customer id means the same thing everywhere. */
-export const ESTATE_SEED = process.env.MERIDIAN_FIXTURE_SEED || 'meridian';
+export const ESTATE_SEED = process.env.NORTHGATE_FIXTURE_SEED || 'northgate';
 
 let cached: FixtureSet | undefined;
 
@@ -57,7 +57,7 @@ function forwardToHec(service: string, line: Record<string, unknown>): void {
       time: Date.now() / 1000,
       host: service,
       source: `mock-external/${service}`,
-      sourcetype: 'meridian:json',
+      sourcetype: 'northgate:json',
       event: line
     });
     const req = http.request({
@@ -134,7 +134,7 @@ export function createMockApp(service: string, options: MockAppOptions = {}): Mo
     res.setHeader('access-control-allow-credentials', 'true');
     res.setHeader('access-control-allow-headers',
       req.header('access-control-request-headers')
-        || 'authorization, content-type, x-correlation-id, x-meridian-xsrf, x-lantern-session, x-idempotency-key, x-vault-token');
+        || 'authorization, content-type, x-correlation-id, x-northgate-xsrf, x-lantern-session, x-idempotency-key, x-vault-token');
     res.setHeader('access-control-allow-methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
     res.setHeader('access-control-expose-headers', 'x-correlation-id');
     if (req.method === 'OPTIONS') {

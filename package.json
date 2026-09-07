@@ -1,8 +1,8 @@
 {
-  "name": "@meridian/mock-external",
+  "name": "@northgate/mock-external",
   "version": "2026.9.0",
   "private": true,
-  "description": "Local stand-ins for every external system the Meridian digital estate talks to. Nothing here is production software.",
+  "description": "Local stand-ins for every external system the Northgate digital estate talks to. Nothing here is production software.",
   "license": "UNLICENSED",
   "engines": {
     "node": ">=18.19.0 <19"
@@ -32,7 +32,7 @@
     "verdaccio": "bash scripts/verdaccio-up.sh"
   },
   "dependencies": {
-    "@meridian/domain-fixtures": "file:../meridian-platform-services/libs/ts/domain-fixtures"
+    "@northgate/domain-fixtures": "file:../northgate-platform-services/libs/ts/domain-fixtures"
   },
   "devDependencies": {
     "@types/jest": "29.5.12",

@@ -1,5 +1,5 @@
 /**
- * @meridian/semaphore-client 1.3.x
+ * @northgate/semaphore-client 1.3.x
  *
  * Owned by platform-engineering. Used by the NestJS BFFs and (via the Angular FeatureFlagGuard)
  * by the front ends. Deliberately dependency free and ES2017 so it loads in the Angular 14 apps
@@ -43,7 +43,7 @@ export interface SemaphoreClientOptions {
   bootstrap?: FlagDefinition[];
 }
 
-// FNV-1a, matches stableHash in @meridian/mock-kit and the Java StableHash in meridian-commons
+// FNV-1a, matches stableHash in @northgate/mock-kit and the Java StableHash in northgate-commons
 export function stableHash(input: string): number {
   let h = 0x811c9dc5;
   for (let i = 0; i < input.length; i++) {

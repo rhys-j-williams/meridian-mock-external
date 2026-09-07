@@ -1,6 +1,6 @@
 # Contributing to External system mocks
 
-Owning team: @meridian/platform-engineering. Ask in `#platform-engineering` on the internal chat platform before starting anything that
+Owning team: @northgate/platform-engineering. Ask in `#platform-engineering` on the internal chat platform before starting anything that
 crosses a team boundary.
 
 ## Branches
@@ -30,7 +30,7 @@ change advisory board reference. The calendar is in `platform-tooling/governance
 ## Pull requests
 
 Two approvals, one of which must come from the owning team. Security sensitive paths listed in
-CODEOWNERS additionally require @meridian/gis-appsec. Fill in every field of the pull request
+CODEOWNERS additionally require @northgate/gis-appsec. Fill in every field of the pull request
 template; the change advisory board reference may be `N/A` outside a freeze, but the rollback plan
 may not.
 

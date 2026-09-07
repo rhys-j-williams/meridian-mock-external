@@ -1,4 +1,4 @@
-import { envPort } from '@meridian/mock-kit';
+import { envPort } from '@northgate/mock-kit';
 import { buildServer } from './server';
 
 buildServer({ settleAfterMs: Number(process.env.PAYLINK_SETTLE_MS ?? 3000) }).listen(envPort('PAYLINK_PORT', 4604)).catch((err) => {

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Publish the internal @meridian packages to the local Verdaccio (4873). Order matters:
+# Publish the internal @northgate packages to the local Verdaccio (4873). Order matters:
 # domain-fixtures first because everything depends on it. Packages whose directory is not in the
 # checkout are skipped with a warning, because the other teams land them on their own branches.
 # A 409 / EPUBLISHCONFLICT means the version is already there and is treated as success.
@@ -9,12 +9,12 @@ set -uo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MOCK_ROOT="$(cd "$HERE/.." && pwd)"
 # Sibling repositories, cloned under their GitHub names into one workspace directory
-WORKSPACE="${MERIDIAN_WORKSPACE:-$(cd "$MOCK_ROOT/.." && pwd)}"
-SERVICES_REPO="${PLATFORM_SERVICES_REPO:-$WORKSPACE/meridian-platform-services}"
-LANTERN_REPO="${LANTERN_REPO:-$WORKSPACE/meridian-lantern-sdk}"
-CANOPY_REPO="${CANOPY_REPO:-$WORKSPACE/meridian-canopy-ui}"
+WORKSPACE="${NORTHGATE_WORKSPACE:-$(cd "$MOCK_ROOT/.." && pwd)}"
+SERVICES_REPO="${PLATFORM_SERVICES_REPO:-$WORKSPACE/northgate-platform-services}"
+LANTERN_REPO="${LANTERN_REPO:-$WORKSPACE/northgate-lantern-sdk}"
+CANOPY_REPO="${CANOPY_REPO:-$WORKSPACE/northgate-canopy-ui}"
 REGISTRY_URL="${REGISTRY_URL:-http://localhost:4873}"
-PUBLISHER_USER="${VERDACCIO_PUBLISHER_USER:-meridian-publisher}"
+PUBLISHER_USER="${VERDACCIO_PUBLISHER_USER:-northgate-publisher}"
 PUBLISHER_PASSWORD="${VERDACCIO_PUBLISHER_PASSWORD:-CHANGEME-verdaccio-publisher}"
 NPMRC="$MOCK_ROOT/.estate/publish.npmrc"
 
@@ -65,7 +65,7 @@ publish_dir() { # name dir node-version [build-cmd]
   fi
   local version
   version=$(node -p "require('$dir/package.json').version")
-  if curl -fsS "$REGISTRY_URL/@meridian%2f$name/$version" -o /dev/null 2>/dev/null; then
+  if curl -fsS "$REGISTRY_URL/@northgate%2f$name/$version" -o /dev/null 2>/dev/null; then
     log "$name@$version already on the registry"
     PUBLISHED=$((PUBLISHED+1)); return
   fi
@@ -98,7 +98,7 @@ if [ -n "$ONLY" ] && ! printf '%s' ",$ONLY," | grep -q ",lantern-sdk,"; then :; 
 else
   warn "lantern-sdk: no checkout at $LANTERN_REPO, skipping"; SKIPPED=$((SKIPPED+1))
 fi
-# canopy-ui lives in its own repository (meridian-canopy-ui, CNPY-2140). Its publish script walks
+# canopy-ui lives in its own repository (northgate-canopy-ui, CNPY-2140). Its publish script walks
 # the release tags the consumers pin (3.5.0, 3.6.1, 3.7.2).
 if [ -n "$ONLY" ] && ! printf '%s' ",$ONLY," | grep -q ",canopy-ui,"; then :; elif [ -x "$CANOPY_REPO/scripts/publish.sh" ]; then
   log "canopy-ui: delegating to $CANOPY_REPO/scripts/publish.sh"
@@ -108,7 +108,7 @@ if [ -n "$ONLY" ] && ! printf '%s' ",$ONLY," | grep -q ",canopy-ui,"; then :; el
     warn "canopy-ui: publish script failed"; FAILED=$((FAILED+1))
   fi
 else
-  warn "canopy-ui: no checkout at $CANOPY_REPO (clone meridian-canopy-ui next to this repository or set CANOPY_REPO), skipping"; SKIPPED=$((SKIPPED+1))
+  warn "canopy-ui: no checkout at $CANOPY_REPO (clone northgate-canopy-ui next to this repository or set CANOPY_REPO), skipping"; SKIPPED=$((SKIPPED+1))
 fi
 
 log "done: $PUBLISHED published/present, $SKIPPED skipped, $FAILED failed"

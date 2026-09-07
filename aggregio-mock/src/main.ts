@@ -1,4 +1,4 @@
-import { envPort } from '@meridian/mock-kit';
+import { envPort } from '@northgate/mock-kit';
 import { buildServer } from './server';
 
 buildServer().listen(envPort('AGGREGIO_PORT', 4601)).catch((err) => {

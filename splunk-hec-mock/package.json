@@ -1,5 +1,5 @@
 {
-  "name": "@meridian/splunk-hec-mock",
+  "name": "@northgate/splunk-hec-mock",
   "version": "1.2.1",
   "private": true,
   "description": "HTTP Event Collector mock writing newline delimited JSON with a correlationId search",

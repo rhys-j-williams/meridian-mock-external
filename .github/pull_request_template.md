@@ -33,4 +33,4 @@ Feature flag: <!-- Semaphore flag name, or none -->
 
 ## Reviewers
 
-<!-- CODEOWNERS will request the owning team. Add @meridian/gis-appsec for security sensitive paths. -->
+<!-- CODEOWNERS will request the owning team. Add @northgate/gis-appsec for security sensitive paths. -->

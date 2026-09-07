@@ -1,9 +1,9 @@
 # Consumed by the mock cx CLI in platform-tooling/mock-scanners/bin.
 project:
-  name: meridian-mock-external
-  team: /CxServer/Meridian/CSWT
+  name: northgate-mock-external
+  team: /CxServer/Northgate/CSWT
 scan:
-  preset: Meridian-High-And-Medium
+  preset: Northgate-High-And-Medium
   incremental: false
   language: typescript
   source: .

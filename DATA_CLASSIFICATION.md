@@ -4,7 +4,7 @@ Classification of everything in this component: **Synthetic — Non Restricted**
 
 This component contains no customer data, no employee data and no production configuration. All
 names, addresses, account numbers, card numbers, transactions, payees and balances are produced by
-the seeded generator in `@meridian/domain-fixtures` and are safe to commit, screenshot and share
+the seeded generator in `@northgate/domain-fixtures` and are safe to commit, screenshot and share
 outside the bank.
 
 Guarantees the fixture generator makes, and the ones this component relies on:

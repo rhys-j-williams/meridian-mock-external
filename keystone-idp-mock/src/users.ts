@@ -1,5 +1,5 @@
-import { Customer } from '@meridian/domain-fixtures';
-import { fixtures } from '@meridian/mock-kit';
+import { Customer } from '@northgate/domain-fixtures';
+import { fixtures } from '@northgate/mock-kit';
 
 /**
  * Every fixture customer is a Keystone user. The username is the local part of the fixture

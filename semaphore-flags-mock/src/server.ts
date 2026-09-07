@@ -1,9 +1,9 @@
-import { createMockApp, fixtures, MockApp, sendError, stableHash } from '@meridian/mock-kit';
+import { createMockApp, fixtures, MockApp, sendError, stableHash } from '@northgate/mock-kit';
 
 /**
  * Semaphore feature flags. Evaluation order: kill switch -> user override -> segment rule ->
  * percentage rollout (hash of flag+user, stable) -> environment default. Same algorithm the
- * @meridian/semaphore-client uses offline, so the client and the server agree when the network
+ * @northgate/semaphore-client uses offline, so the client and the server agree when the network
  * is flapping (SEMA-77, the "flags flicker on reconnect" defect).
  *
  * Environments: local, dev, uat, prod. Segments come from the fixture customer segment plus
@@ -52,7 +52,7 @@ const FLAGS: Flag[] = [
     }
   },
   {
-    key: 'new_dashboard_v2', description: 'Canopy 2.x dashboard layout in Meridian Online. Percentage rollout in prod.',
+    key: 'new_dashboard_v2', description: 'Canopy 2.x dashboard layout in Northgate Online. Percentage rollout in prod.',
     owner: 'retail-digital', ticket: 'MOL-3990', kind: 'boolean', createdAt: '2022-11-02',
     environments: {
       local: env(true, true), dev: env(true, true), uat: env(true, true), prod: env(true, false, [{ segment: 'staff', value: true }], 50)

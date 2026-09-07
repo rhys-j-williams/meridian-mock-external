@@ -5,7 +5,7 @@ import {
   encodeAccountRecord,
   encodeTransactionRecord,
   FixtureSet
-} from '@meridian/domain-fixtures';
+} from '@northgate/domain-fixtures';
 import { BedrockRequest, BedrockResponse, RecordFormatError } from './messages';
 
 /**

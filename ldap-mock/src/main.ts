@@ -1,4 +1,4 @@
-import { envPort } from '@meridian/mock-kit';
+import { envPort } from '@northgate/mock-kit';
 import { buildServer } from './server';
 
 const mock = buildServer();

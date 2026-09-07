@@ -73,7 +73,7 @@ describe('keystone-idp-mock authorization code flow', () => {
     const user = users[3];
 
     const authorize = await request(`${base}/oauth2/v1/authorize?` + form({
-      client_id: 'meridian-online-web',
+      client_id: 'northgate-online-web',
       redirect_uri: 'http://localhost:4200/index.html',
       response_type: 'code',
       scope: 'openid profile email offline_access accounts.read',
@@ -105,7 +105,7 @@ describe('keystone-idp-mock authorization code flow', () => {
     expect(mfa.headers['set-cookie']?.[0]).toContain('KEYSTONE_SESSION=');
 
     const badVerifier = await request(`${base}/oauth2/v1/token`, { method: 'POST', headers: FORM, body: form({
-      grant_type: 'authorization_code', client_id: 'meridian-online-web', code, code_verifier: 'wrong', redirect_uri: 'http://localhost:4200/index.html'
+      grant_type: 'authorization_code', client_id: 'northgate-online-web', code, code_verifier: 'wrong', redirect_uri: 'http://localhost:4200/index.html'
     }) });
     // a failed PKCE check burns the code, exactly as the real Keystone does
     expect(badVerifier.status).toBe(400);
@@ -114,14 +114,14 @@ describe('keystone-idp-mock authorization code flow', () => {
     // run the flow again against the SSO cookie: no pages this time
     const cookie = (mfa.headers['set-cookie'] as string[])[0].split(';')[0];
     const sso = await request(`${base}/oauth2/v1/authorize?` + form({
-      client_id: 'meridian-online-web', redirect_uri: 'http://localhost:4200/index.html', response_type: 'code',
+      client_id: 'northgate-online-web', redirect_uri: 'http://localhost:4200/index.html', response_type: 'code',
       scope: 'openid profile email offline_access accounts.read', state, nonce, code_challenge: challenge, code_challenge_method: 'S256'
     }), { headers: { cookie } });
     expect(sso.status).toBe(302);
     const code2 = new URL(sso.headers.location as string).searchParams.get('code') as string;
 
     const token = await request(`${base}/oauth2/v1/token`, { method: 'POST', headers: FORM, body: form({
-      grant_type: 'authorization_code', client_id: 'meridian-online-web', code: code2, code_verifier: verifier, redirect_uri: 'http://localhost:4200/index.html'
+      grant_type: 'authorization_code', client_id: 'northgate-online-web', code: code2, code_verifier: verifier, redirect_uri: 'http://localhost:4200/index.html'
     }) });
     expect(token.status).toBe(200);
     const tokens = JSON.parse(token.body);
@@ -129,7 +129,7 @@ describe('keystone-idp-mock authorization code flow', () => {
     expect(tokens.refresh_token).toMatch(/^rt_/);
 
     const jwks = createRemoteJWKSet(new URL(`${base}/oauth2/v1/keys`));
-    const id = await jwtVerify(tokens.id_token, jwks, { issuer: base, audience: 'meridian-online-web' });
+    const id = await jwtVerify(tokens.id_token, jwks, { issuer: base, audience: 'northgate-online-web' });
     expect(id.payload.sub).toBe(user.sub);
     expect(id.payload.nonce).toBe(nonce);
     expect(id.payload.amr).toEqual(expect.arrayContaining(['pwd', 'otp']));
@@ -137,16 +137,16 @@ describe('keystone-idp-mock authorization code flow', () => {
     expect(id.protectedHeader.kid).toMatch(/^keystone-/);
     expect(id.payload.email).toMatch(/@example\.com$/);
 
-    const access = await jwtVerify(tokens.access_token, jwks, { issuer: base, audience: 'api://meridian-digital-channels' });
+    const access = await jwtVerify(tokens.access_token, jwks, { issuer: base, audience: 'api://northgate-digital-channels' });
     expect(access.payload.scope).toContain('accounts.read');
-    expect(decodeJwt(tokens.access_token).client_id).toBe('meridian-online-web');
+    expect(decodeJwt(tokens.access_token).client_id).toBe('northgate-online-web');
 
     const userinfo = await request(`${base}/oauth2/v1/userinfo`, { headers: { authorization: `Bearer ${tokens.access_token}` } });
     expect(userinfo.status).toBe(200);
     expect(JSON.parse(userinfo.body).preferred_username).toBe(user.username);
 
     const refreshed = await request(`${base}/oauth2/v1/token`, { method: 'POST', headers: FORM, body: form({
-      grant_type: 'refresh_token', client_id: 'meridian-online-web', refresh_token: tokens.refresh_token
+      grant_type: 'refresh_token', client_id: 'northgate-online-web', refresh_token: tokens.refresh_token
     }) });
     expect(refreshed.status).toBe(200);
     expect(JSON.parse(refreshed.body).refresh_token).not.toBe(tokens.refresh_token);
@@ -169,13 +169,13 @@ describe('keystone-idp-mock authorization code flow', () => {
 
   it('refuses public clients that skip PKCE and unregistered redirects', async () => {
     const noPkce = await request(`${base}/oauth2/v1/authorize?` + form({
-      client_id: 'meridian-online-web', redirect_uri: 'http://localhost:4200/', response_type: 'code', scope: 'openid'
+      client_id: 'northgate-online-web', redirect_uri: 'http://localhost:4200/', response_type: 'code', scope: 'openid'
     }));
     expect(noPkce.status).toBe(400);
     expect(noPkce.body).toContain('PKCE required');
 
     const badRedirect = await request(`${base}/oauth2/v1/authorize?` + form({
-      client_id: 'meridian-online-web', redirect_uri: 'http://evil.example/', response_type: 'code', scope: 'openid', code_challenge: 'x'
+      client_id: 'northgate-online-web', redirect_uri: 'http://evil.example/', response_type: 'code', scope: 'openid', code_challenge: 'x'
     }));
     expect(badRedirect.status).toBe(400);
   });

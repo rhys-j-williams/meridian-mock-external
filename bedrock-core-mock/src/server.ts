@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { createMockApp, fixtures, MockApp, sendError } from '@meridian/mock-kit';
+import { createMockApp, fixtures, MockApp, sendError } from '@northgate/mock-kit';
 import { Ledger, RC_ABEND } from './ledger';
 import {
   decodeAccountRecord,
