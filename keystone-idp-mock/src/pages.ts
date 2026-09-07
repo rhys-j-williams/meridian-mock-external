@@ -14,7 +14,7 @@ function shell(title: string, body: string): string {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${esc(title)} - Meridian Trust Bank</title>
+<title>${esc(title)} - Northgate Trust Bank</title>
 <style>
   body { margin: 0; font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f3f5f8; color: #1d2733; }
   header { background: #0b2a4a; color: #fff; padding: 14px 24px; font-weight: 600; letter-spacing: .02em; }
@@ -30,7 +30,7 @@ function shell(title: string, body: string): string {
 </style>
 </head>
 <body>
-<header>Meridian Trust Bank <span>Keystone sign in (mock)</span></header>
+<header>Northgate Trust Bank <span>Keystone sign in (mock)</span></header>
 <main>${body}</main>
 <footer>Keystone IdP mock. Not a bank system. Synthetic users only.</footer>
 </body>
@@ -39,7 +39,7 @@ function shell(title: string, body: string): string {
 
 export function loginPage(txn: string, error?: string): string {
   return shell('Sign in', `
-<h1>Sign in to Meridian Online</h1>
+<h1>Sign in to Northgate Online</h1>
 ${error ? `<div class="error">${esc(error)}</div>` : ''}
 <form method="post" action="/login">
   <input type="hidden" name="txn" value="${esc(txn)}">
@@ -70,5 +70,5 @@ export function errorPage(title: string, detail: string): string {
 }
 
 export function loggedOutPage(): string {
-  return shell('Signed out', `<h1>You have been signed out</h1><p>Close this window or return to Meridian Online.</p>`);
+  return shell('Signed out', `<h1>You have been signed out</h1><p>Close this window or return to Northgate Online.</p>`);
 }

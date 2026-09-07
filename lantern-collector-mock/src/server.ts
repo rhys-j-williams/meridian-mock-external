@@ -1,13 +1,13 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { createMockApp, MockApp, sendError } from '@meridian/mock-kit';
+import { createMockApp, MockApp, sendError } from '@northgate/mock-kit';
 
 /**
  * Lumenview Lantern collector. Ingests /v1/batch (what lantern.js sends) and the single-event
- * /v1/track /v1/page /v1/identify routes (what @meridian/lantern-sdk's HttpClient transport
+ * /v1/track /v1/page /v1/identify routes (what @northgate/lantern-sdk's HttpClient transport
  * sends when the vendor script is blocked by CSP, which is most of UAT). Keeps the last 50k
  * events in memory, exposes /v1/summary and /v1/events for the demo, and serves lantern.min.js
- * so the "Meridian hosted copy" in the SDK README is a real URL.
+ * so the "Northgate hosted copy" in the SDK README is a real URL.
  *
  * Write keys are not validated beyond "present": the vendor sandbox does not validate them
  * either, which is how LNTN-388 happened (six months of UAT traffic in the prod project).
@@ -44,7 +44,7 @@ export function buildServer(options: { staticDir: string }): MockApp & { events:
   const sourceOf = (req: import('express').Request, ev: Record<string, unknown>): LanternEvent['source'] => {
     const lib = (ev.context as { library?: { name?: string } } | undefined)?.library?.name;
     if (lib === 'lantern.js') return 'lantern.js';
-    if (lib === '@meridian/lantern-sdk' || req.header('x-lantern-sdk')) return 'lantern-sdk';
+    if (lib === '@northgate/lantern-sdk' || req.header('x-lantern-sdk')) return 'lantern-sdk';
     if (req.header('x-lantern-server')) return 'server';
     return 'unknown';
   };

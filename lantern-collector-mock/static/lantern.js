@@ -1,4 +1,4 @@
-/*! Lumenview Lantern Web SDK 4.11.2 (Meridian hosted copy) - mock build for the local estate.
+/*! Lumenview Lantern Web SDK 4.11.2 (Northgate hosted copy) - mock build for the local estate.
  *  Exposes window.Lantern with track / page / identify / group / reset and a queue that buffers
  *  calls made before load() has run, exactly like the vendor snippet does. Events are POSTed to
  *  the collector in batches. Nothing here is real vendor code.

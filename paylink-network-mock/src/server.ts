@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { createMockApp, deliverWebhook, fixtures, MockApp, sendError, stableHash, WebhookDelivery } from '@meridian/mock-kit';
+import { createMockApp, deliverWebhook, fixtures, MockApp, sendError, stableHash, WebhookDelivery } from '@northgate/mock-kit';
 
 /**
  * PayLink person to person network. Directory is every fixture customer (email + mobile

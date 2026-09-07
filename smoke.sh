@@ -22,8 +22,8 @@
 set -uo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-WORKSPACE="${MERIDIAN_WORKSPACE:-$(cd "$HERE/.." && pwd)}"
-SERVICES_ROOT="${PLATFORM_SERVICES_REPO:-$WORKSPACE/meridian-platform-services}"
+WORKSPACE="${NORTHGATE_WORKSPACE:-$(cd "$HERE/.." && pwd)}"
+SERVICES_ROOT="${PLATFORM_SERVICES_REPO:-$WORKSPACE/northgate-platform-services}"
 STATE="$HERE/.estate"
 mkdir -p "$STATE"
 MODE="$(cat "$STATE/mode" 2>/dev/null || echo unknown)"
@@ -46,7 +46,7 @@ LANTERN_URL="${LANTERN_URL:-http://localhost:4607}"
 LANTERN_WRITE_KEY="${LANTERN_WRITE_KEY:-CHANGEME-lantern-write-key}"
 SPLUNK_URL="${SPLUNK_URL:-http://localhost:4606}"
 SPLUNK_HEC_TOKEN="${SPLUNK_HEC_TOKEN:-CHANGEME-hec-token}"
-OIDC_CLIENT_ID="${OIDC_CLIENT_ID:-meridian-online-web}"
+OIDC_CLIENT_ID="${OIDC_CLIENT_ID:-northgate-online-web}"
 OIDC_REDIRECT_URI="${OIDC_REDIRECT_URI:-http://localhost:4200/index.html}"
 BEACON_TIMEOUT_SECS=10
 
@@ -74,7 +74,7 @@ service_reason() { # name port
   echo "$1 not answering on $2 (not started, or failed; see .estate/logs/$1.log)"
 }
 
-echo "meridian estate smoke, mode=$MODE, $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+echo "northgate estate smoke, mode=$MODE, $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
 # ------------------------------------------------------------------------------------------------
 hdr 0 "mock health sweep"

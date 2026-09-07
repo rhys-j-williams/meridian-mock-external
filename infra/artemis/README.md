@@ -10,7 +10,7 @@ Ports: 61616 core/JMS, 61613 STOMP (used by bedrock-core-mock), 8161 console
 (artemis / CHANGEME-artemis).
 
 In-process fallback when Docker is absent: the Java services embed Artemis themselves under the same
-profile (see platform-services/libs/java/meridian-messaging), and bedrock-core-mock falls back to its
+profile (see platform-services/libs/java/northgate-messaging), and bedrock-core-mock falls back to its
 own in-memory BEDROCK.REQ/RESP pair with the REST facade on 4600 as the way in. Nothing in
 mock-external starts a broker without Docker.
 

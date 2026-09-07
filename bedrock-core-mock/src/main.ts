@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { envPort } from '@meridian/mock-kit';
+import { envPort } from '@northgate/mock-kit';
 import { buildServer } from './server';
 
 const port = envPort('BEDROCK_CORE_PORT', 4600);

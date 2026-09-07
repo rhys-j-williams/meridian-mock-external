@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import * as http from 'http';
-import { decodeAccountRecord } from '@meridian/domain-fixtures';
+import { decodeAccountRecord } from '@northgate/domain-fixtures';
 import { decodeResponse, decodeTransactionRecord, encodeRequest } from './messages';
 import { buildServer, BedrockMock } from './server';
 

@@ -1,5 +1,5 @@
 {
-  "name": "@meridian/lantern-collector-mock",
+  "name": "@northgate/lantern-collector-mock",
   "version": "1.3.0",
   "private": true,
   "description": "Lumenview Lantern collector mock, also serves the vendor script lantern.min.js",

@@ -1,5 +1,5 @@
 {
-  "name": "@meridian/triscore-mock",
+  "name": "@northgate/triscore-mock",
   "version": "1.0.4",
   "private": true,
   "description": "TriScore credit bureau mock: deterministic scores and knowledge based verification",

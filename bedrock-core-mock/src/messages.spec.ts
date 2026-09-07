@@ -1,4 +1,4 @@
-import { decodeZonedDecimal, encodeZonedDecimal } from '@meridian/domain-fixtures';
+import { decodeZonedDecimal, encodeZonedDecimal } from '@northgate/domain-fixtures';
 import { decodeRequest, decodeResponse, decodeTransactionRecord, encodeRequest, encodeResponse, REQ_LENGTH } from './messages';
 
 describe('MTBREQ / MTBRESP envelopes', () => {

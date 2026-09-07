@@ -16,16 +16,16 @@ export interface OidcClient {
 
 export const CLIENTS: OidcClient[] = [
   {
-    clientId: 'meridian-online-web',
-    name: 'Meridian Online (retail-web)',
+    clientId: 'northgate-online-web',
+    name: 'Northgate Online (retail-web)',
     redirectUris: ['http://localhost:4200/', 'http://localhost:4200/index.html', 'http://localhost:4200/auth/callback', 'http://localhost:4200/silent-refresh.html'],
     postLogoutRedirectUris: ['http://localhost:4200/'],
     scopes: ['openid', 'profile', 'email', 'offline_access', 'accounts.read', 'payments.write'],
     accessTokenTtlSeconds: 900
   },
   {
-    clientId: 'meridian-business-web',
-    name: 'Meridian Business (business-web)',
+    clientId: 'northgate-business-web',
+    name: 'Northgate Business (business-web)',
     redirectUris: ['http://localhost:4201/', 'http://localhost:4201/index.html', 'http://localhost:4201/auth/callback', 'http://localhost:4201/silent-refresh.html'],
     postLogoutRedirectUris: ['http://localhost:4201/'],
     scopes: ['openid', 'profile', 'email', 'offline_access', 'accounts.read', 'payments.write', 'entitlements.read'],
@@ -97,4 +97,4 @@ export function findClient(clientId: string): OidcClient | undefined {
 }
 
 /** The API audience every resource server checks. Keystone calls it the "digital channels" API. */
-export const API_AUDIENCE = 'api://meridian-digital-channels';
+export const API_AUDIENCE = 'api://northgate-digital-channels';

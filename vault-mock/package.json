@@ -1,5 +1,5 @@
 {
-  "name": "@meridian/vault-mock",
+  "name": "@northgate/vault-mock",
   "version": "1.4.0",
   "private": true,
   "description": "Subset of the Vault HTTP API: KV v2, token auth, policies",

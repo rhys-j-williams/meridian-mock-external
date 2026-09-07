@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 import * as stompit from 'stompit';
-import { Logger } from '@meridian/mock-kit';
+import { Logger } from '@northgate/mock-kit';
 
 /**
  * Queue transport. Two implementations behind one interface:

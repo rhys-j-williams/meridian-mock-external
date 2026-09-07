@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { createMockApp, MockApp } from '@meridian/mock-kit';
+import { createMockApp, MockApp } from '@northgate/mock-kit';
 
 /**
  * Vault HTTP API subset: sys/health, auth/token/lookup-self, auth/approle/login, kv-v2 read/write/
@@ -33,26 +33,26 @@ const SERVICES = ['bff-retail', 'bff-business', 'beacon-notifications', 'alerts-
 function seedSecrets(): Record<string, Record<string, string>> {
   const now = new Date().toISOString();
   const out: Record<string, Record<string, string>> = {
-    'meridian/shared/keystone': {
+    'northgate/shared/keystone': {
       issuer: 'http://localhost:4400',
-      audience: 'api://meridian-digital-channels',
+      audience: 'api://northgate-digital-channels',
       jwks_uri: 'http://localhost:4400/oauth2/v1/keys'
     },
-    'meridian/shared/splunk': { hec_url: 'http://localhost:4606/services/collector/event', hec_token: 'CHANGEME-hec-token' },
-    'meridian/shared/redis': { host: 'localhost', port: '6379', password: 'CHANGEME-redis-password' },
-    'meridian/shared/redpanda': { bootstrap_servers: 'localhost:9092', sasl_username: 'meridian', sasl_password: 'CHANGEME-redpanda-password' },
-    'meridian/shared/ibm-mq': { queue_manager: 'MTBQM01', channel: 'DEV.APP.SVRCONN', host: 'localhost', port: '1414', user: 'app', password: 'CHANGEME-mq-app-password' },
-    'meridian/shared/artemis': { url: 'tcp://localhost:61616', user: 'artemis', password: 'CHANGEME-artemis' },
-    'meridian/shared/ldap': { url: 'ldap://localhost:4609', bind_dn: 'cn=svc-beacon,ou=service-accounts,dc=meridiantrust,dc=example', bind_password: 'CHANGEME-ldap-bind' },
-    'meridian/vendors/aggregio': { client_id: 'CHANGEME-aggregio-client-id', secret: 'CHANGEME-aggregio-secret', base_url: 'http://localhost:4601' },
-    'meridian/vendors/tickerhaus': { api_key: 'CHANGEME-tickerhaus-api-key', base_url: 'http://localhost:4602' },
-    'meridian/vendors/triscore': { subscriber_code: 'CHANGEME-triscore-subscriber', base_url: 'http://localhost:4603' },
-    'meridian/vendors/paylink': { participant_id: 'CHANGEME-paylink-participant', signing_key: 'CHANGEME-paylink-signing-key', base_url: 'http://localhost:4604' },
-    'meridian/vendors/lantern': { write_key: 'CHANGEME-lantern-write-key', collector_url: 'http://localhost:4607' },
-    'meridian/vendors/semaphore': { sdk_key: 'CHANGEME-semaphore-sdk-key', base_url: 'http://localhost:4608' }
+    'northgate/shared/splunk': { hec_url: 'http://localhost:4606/services/collector/event', hec_token: 'CHANGEME-hec-token' },
+    'northgate/shared/redis': { host: 'localhost', port: '6379', password: 'CHANGEME-redis-password' },
+    'northgate/shared/redpanda': { bootstrap_servers: 'localhost:9092', sasl_username: 'northgate', sasl_password: 'CHANGEME-redpanda-password' },
+    'northgate/shared/ibm-mq': { queue_manager: 'MTBQM01', channel: 'DEV.APP.SVRCONN', host: 'localhost', port: '1414', user: 'app', password: 'CHANGEME-mq-app-password' },
+    'northgate/shared/artemis': { url: 'tcp://localhost:61616', user: 'artemis', password: 'CHANGEME-artemis' },
+    'northgate/shared/ldap': { url: 'ldap://localhost:4609', bind_dn: 'cn=svc-beacon,ou=service-accounts,dc=northgatetrust,dc=example', bind_password: 'CHANGEME-ldap-bind' },
+    'northgate/vendors/aggregio': { client_id: 'CHANGEME-aggregio-client-id', secret: 'CHANGEME-aggregio-secret', base_url: 'http://localhost:4601' },
+    'northgate/vendors/tickerhaus': { api_key: 'CHANGEME-tickerhaus-api-key', base_url: 'http://localhost:4602' },
+    'northgate/vendors/triscore': { subscriber_code: 'CHANGEME-triscore-subscriber', base_url: 'http://localhost:4603' },
+    'northgate/vendors/paylink': { participant_id: 'CHANGEME-paylink-participant', signing_key: 'CHANGEME-paylink-signing-key', base_url: 'http://localhost:4604' },
+    'northgate/vendors/lantern': { write_key: 'CHANGEME-lantern-write-key', collector_url: 'http://localhost:4607' },
+    'northgate/vendors/semaphore': { sdk_key: 'CHANGEME-semaphore-sdk-key', base_url: 'http://localhost:4608' }
   };
   for (const svc of SERVICES) {
-    out[`meridian/services/${svc}`] = {
+    out[`northgate/services/${svc}`] = {
       keystone_client_id: svc,
       keystone_client_secret: `CHANGEME-${svc}-client-secret`,
       db_username: `${svc.replace(/-/g, '_')}_app`,
@@ -60,8 +60,8 @@ function seedSecrets(): Record<string, Record<string, string>> {
       seeded_at: now
     };
   }
-  out['meridian/services/pii-vault'].tokenisation_key = 'CHANGEME-pii-tokenisation-key-32-bytes';
-  out['meridian/services/documents-service'].pdf_signing_cert_alias = 'meridian-documents-2024';
+  out['northgate/services/pii-vault'].tokenisation_key = 'CHANGEME-pii-tokenisation-key-32-bytes';
+  out['northgate/services/documents-service'].pdf_signing_cert_alias = 'northgate-documents-2024';
   return out;
 }
 
@@ -77,12 +77,12 @@ export function buildServer(): MockApp {
   }
   tokens.set(ROOT_TOKEN, { policies: ['root'], display: 'token-root', ttl: 0, created: Date.now() });
   for (const svc of SERVICES) {
-    roles.set(svc, { roleId: `role-${svc}`, secretId: `CHANGEME-${svc}-secret-id`, policies: ['default', `meridian-${svc}`] });
+    roles.set(svc, { roleId: `role-${svc}`, secretId: `CHANGEME-${svc}-secret-id`, policies: ['default', `northgate-${svc}`] });
   }
 
   const policies: Record<string, string> = { root: '', default: 'path "auth/token/lookup-self" { capabilities = ["read"] }' };
   for (const svc of SERVICES) {
-    policies[`meridian-${svc}`] = `path "secret/data/meridian/services/${svc}" { capabilities = ["read"] }\npath "secret/data/meridian/shared/*" { capabilities = ["read"] }\npath "secret/data/meridian/vendors/*" { capabilities = ["read"] }`;
+    policies[`northgate-${svc}`] = `path "secret/data/northgate/services/${svc}" { capabilities = ["read"] }\npath "secret/data/northgate/shared/*" { capabilities = ["read"] }\npath "secret/data/northgate/vendors/*" { capabilities = ["read"] }`;
   }
 
   const vaultError = (res: import('express').Response, status: number, ...errors: string[]) => res.status(status).json({ errors });
@@ -157,8 +157,8 @@ export function buildServer(): MockApp {
   });
 
   const canRead = (t: { policies: string[] }, path: string) => t.policies.includes('root')
-    || path.startsWith('meridian/shared/') || path.startsWith('meridian/vendors/')
-    || t.policies.some((p) => p.startsWith('meridian-') && path === `meridian/services/${p.slice('meridian-'.length)}`);
+    || path.startsWith('northgate/shared/') || path.startsWith('northgate/vendors/')
+    || t.policies.some((p) => p.startsWith('northgate-') && path === `northgate/services/${p.slice('northgate-'.length)}`);
 
   app.get('/v1/secret/data/*', (req, res) => {
     const t = auth(req, res);

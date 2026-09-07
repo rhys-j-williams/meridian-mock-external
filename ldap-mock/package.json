@@ -1,5 +1,5 @@
 {
-  "name": "@meridian/ldap-mock",
+  "name": "@northgate/ldap-mock",
   "version": "1.0.2",
   "private": true,
   "description": "In process LDAP directory for Beacon admin authentication",
