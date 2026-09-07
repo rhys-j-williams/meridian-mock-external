@@ -13,7 +13,7 @@ business-web, the BFF logs and the Bedrock batch report.
 ## Quick start
 
 ```
-cd mock-external
+cd meridian-mock-external
 ./estate-up.sh          # Verdaccio, internal packages, mocks, platform services, port table
 ./smoke.sh              # end-to-end checks, non-zero exit on any FAIL
 ./estate-down.sh
@@ -26,6 +26,11 @@ in-process path, which is also what the Jenkins agents get because Docker-in-Doc
 Other switches in `estate-up.sh`: `ESTATE_SKIP_PUBLISH=1`, `ESTATE_SKIP_SERVICES=1`,
 `ESTATE_SERVICES="bff-retail bedrock-adapter"`, `ESTATE_WAIT_SECS`, `ESTATE_REBUILD=1`. Runtime state
 (pids, logs, Verdaccio storage, HEC data) lives under `.estate/` and is not committed.
+
+The scripts expect the other repositories cloned next to this one under their GitHub names
+(`meridian-platform-services`, `meridian-lantern-sdk`, `meridian-canopy-ui`); `MERIDIAN_WORKSPACE`
+or the per repository `*_REPO` variables override that. The workspace layout is described in
+`meridian-cswt-estate/README.md`.
 
 Platform services that are not in the checkout are reported as SKIP by both scripts, with the
 directory name, rather than failing. That is deliberate: the services land on their own branches and

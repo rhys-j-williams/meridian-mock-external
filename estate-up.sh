@@ -3,7 +3,8 @@
 #
 #   1. Verdaccio on 4873 and the internal packages published to it
 #   2. the external mocks + infrastructure (compose when Docker works, in-process otherwise)
-#   3. the platform services the front ends need, from ../platform-services, in the background
+#   3. the platform services the front ends need, from the meridian-platform-services checkout
+#      next to this one (or PLATFORM_SERVICES_REPO), in the background
 #   4. a table of URLs
 #
 # Flags / env:
@@ -15,18 +16,19 @@
 #   ESTATE_WAIT_SECS=180      how long to wait for health before giving up on a service (still
 #                             continues; the table says which ones did not answer)
 #
-# Anything under ../platform-services that is not present in this checkout is skipped with a
-# warning, on purpose: the services land on their own branches and the mocks must not depend on
-# them being merged. Same for canopy-ui and lantern-sdk in the publish step.
+# Sibling repositories that are not checked out are skipped with a warning, on purpose: the mocks
+# must not depend on the services or the libraries being present. Same for canopy-ui and
+# lantern-sdk in the publish step. Layout is one workspace directory with each repository cloned
+# under its GitHub name (MERIDIAN_WORKSPACE overrides the default of the parent directory).
 #
 # State lives in mock-external/.estate (pids, logs). estate-down.sh reads it. PLAT-2244, PLAT-2301.
 set -uo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "$HERE/.." && pwd)"
+WORKSPACE="${MERIDIAN_WORKSPACE:-$(cd "$HERE/.." && pwd)}"
 STATE="$HERE/.estate"
 LOGS="$STATE/logs"
-SERVICES_ROOT="$REPO_ROOT/platform-services"
+SERVICES_ROOT="${PLATFORM_SERVICES_REPO:-$WORKSPACE/meridian-platform-services}"
 WAIT_SECS="${ESTATE_WAIT_SECS:-180}"
 mkdir -p "$LOGS"
 
@@ -72,7 +74,7 @@ MODE="in-process"
 if docker_ok; then MODE="docker"; fi
 if [ "${ESTATE_NO_DOCKER:-0}" = "1" ]; then log "ESTATE_NO_DOCKER=1, not touching Docker"; fi
 echo "$MODE" > "$STATE/mode"
-log "mode: $MODE   (repo: $REPO_ROOT)"
+log "mode: $MODE   (workspace: $WORKSPACE)"
 
 # ------------------------------------------------------------------------------------------------
 step "1/4 registry"

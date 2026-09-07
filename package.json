@@ -32,7 +32,7 @@
     "verdaccio": "bash scripts/verdaccio-up.sh"
   },
   "dependencies": {
-    "@meridian/domain-fixtures": "file:../platform-services/libs/ts/domain-fixtures"
+    "@meridian/domain-fixtures": "file:../meridian-platform-services/libs/ts/domain-fixtures"
   },
   "devDependencies": {
     "@types/jest": "29.5.12",

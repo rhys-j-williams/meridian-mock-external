@@ -22,8 +22,8 @@
 set -uo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "$HERE/.." && pwd)"
-SERVICES_ROOT="$REPO_ROOT/platform-services"
+WORKSPACE="${MERIDIAN_WORKSPACE:-$(cd "$HERE/.." && pwd)}"
+SERVICES_ROOT="${PLATFORM_SERVICES_REPO:-$WORKSPACE/meridian-platform-services}"
 STATE="$HERE/.estate"
 mkdir -p "$STATE"
 MODE="$(cat "$STATE/mode" 2>/dev/null || echo unknown)"

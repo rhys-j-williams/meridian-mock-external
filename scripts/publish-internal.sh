@@ -8,7 +8,11 @@
 set -uo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MOCK_ROOT="$(cd "$HERE/.." && pwd)"
-REPO_ROOT="$(cd "$MOCK_ROOT/.." && pwd)"
+# Sibling repositories, cloned under their GitHub names into one workspace directory
+WORKSPACE="${MERIDIAN_WORKSPACE:-$(cd "$MOCK_ROOT/.." && pwd)}"
+SERVICES_REPO="${PLATFORM_SERVICES_REPO:-$WORKSPACE/meridian-platform-services}"
+LANTERN_REPO="${LANTERN_REPO:-$WORKSPACE/meridian-lantern-sdk}"
+CANOPY_REPO="${CANOPY_REPO:-$WORKSPACE/meridian-canopy-ui}"
 REGISTRY_URL="${REGISTRY_URL:-http://localhost:4873}"
 PUBLISHER_USER="${VERDACCIO_PUBLISHER_USER:-meridian-publisher}"
 PUBLISHER_PASSWORD="${VERDACCIO_PUBLISHER_PASSWORD:-CHANGEME-verdaccio-publisher}"
@@ -79,24 +83,23 @@ publish_dir() { # name dir node-version [build-cmd]
   fi
 }
 
-publish_dir domain-fixtures  "$REPO_ROOT/platform-services/libs/ts/domain-fixtures" 18.19.0
+publish_dir domain-fixtures  "$SERVICES_REPO/libs/ts/domain-fixtures" 18.19.0
 # semaphore-client is an npm workspace of mock-external: install/build from the root, never from
 # inside the member directory (npm scopes an install run there to that workspace and prunes the rest)
 [ -x "$MOCK_ROOT/node_modules/.bin/tsc" ] || (cd "$MOCK_ROOT" && use_node 18.19.0 && npm ci --ignore-scripts >/dev/null)
 publish_dir semaphore-client "$MOCK_ROOT/lib/semaphore-client"                        18.19.0 "$MOCK_ROOT/node_modules/.bin/tsc -p tsconfig.json"
 # lantern-sdk: ng-packagr output lives in dist/lantern-sdk; the package.json we publish is in there
-if [ -n "$ONLY" ] && ! printf '%s' ",$ONLY," | grep -q ",lantern-sdk,"; then :; elif [ -f "$REPO_ROOT/lantern-sdk/package.json" ]; then
-  if ( cd "$REPO_ROOT/lantern-sdk" && use_node 14.21.3 && { [ -d node_modules ] || npm ci --ignore-scripts >/dev/null 2>&1; } && npm run build >/dev/null ); then
-    publish_dir lantern-sdk "$REPO_ROOT/lantern-sdk/dist/lantern-sdk" 14.21.3 "true"
+if [ -n "$ONLY" ] && ! printf '%s' ",$ONLY," | grep -q ",lantern-sdk,"; then :; elif [ -f "$LANTERN_REPO/package.json" ]; then
+  if ( cd "$LANTERN_REPO" && use_node 14.21.3 && { [ -d node_modules ] || npm ci --ignore-scripts >/dev/null 2>&1; } && npm run build >/dev/null ); then
+    publish_dir lantern-sdk "$LANTERN_REPO/dist/lantern-sdk" 14.21.3 "true"
   else
     warn "lantern-sdk: build failed (needs node 14.21.3 and @angular/cli@12.2.18 global, see lantern-sdk/README.md)"; FAILED=$((FAILED+1))
   fi
 else
-  warn "lantern-sdk: not present, skipping"; SKIPPED=$((SKIPPED+1))
+  warn "lantern-sdk: no checkout at $LANTERN_REPO, skipping"; SKIPPED=$((SKIPPED+1))
 fi
 # canopy-ui lives in its own repository (meridian-canopy-ui, CNPY-2140). Its publish script walks
-# the release tags the consumers pin (3.5.0, 3.6.1, 3.7.2). Default location is a sibling checkout.
-CANOPY_REPO="${CANOPY_REPO:-$REPO_ROOT/../meridian-canopy-ui}"
+# the release tags the consumers pin (3.5.0, 3.6.1, 3.7.2).
 if [ -n "$ONLY" ] && ! printf '%s' ",$ONLY," | grep -q ",canopy-ui,"; then :; elif [ -x "$CANOPY_REPO/scripts/publish.sh" ]; then
   log "canopy-ui: delegating to $CANOPY_REPO/scripts/publish.sh"
   if ( cd "$CANOPY_REPO" && use_node 16.20.2 && REGISTRY_URL="$REGISTRY_URL" NPM_CONFIG_USERCONFIG="$NPMRC" ./scripts/publish.sh ); then
