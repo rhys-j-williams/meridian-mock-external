@@ -5,7 +5,8 @@
 #   docker compose --profile local-artemis up  explicit artemis (it is also in the default set)
 #
 # Ports are the ones in PORTS.md. Do not remap them; every env.json in the estate hard codes them.
-# Build contexts are the repo root because of the domain-fixtures file: dependency, see any Dockerfile.
+# Build contexts are the parent workspace (sibling clones) because of the domain-fixtures
+# file: dependency on ../northgate-platform-services, see any Dockerfile.
 #
 # Oracle and DB2 are deliberately absent. The Java services run H2 in compatibility mode. README.
 
@@ -42,7 +43,7 @@ services:
 
   keystone-idp-mock:
     <<: *mock
-    build: { context: .., dockerfile: mock-external/keystone-idp-mock/Dockerfile }
+    build: { context: .., dockerfile: northgate-mock-external/keystone-idp-mock/Dockerfile }
     image: northgate/keystone-idp-mock
     container_name: estate-keystone-idp-mock
     ports: ["4400:4400"]
@@ -58,7 +59,7 @@ services:
 
   bedrock-core-mock:
     <<: *mock
-    build: { context: .., dockerfile: mock-external/bedrock-core-mock/Dockerfile }
+    build: { context: .., dockerfile: northgate-mock-external/bedrock-core-mock/Dockerfile }
     image: northgate/bedrock-core-mock
     container_name: estate-bedrock-core-mock
     ports: ["4600:4600"]
@@ -70,9 +71,9 @@ services:
       BEDROCK_STOMP_HOST: artemis
       BEDROCK_STOMP_PORT: "61613"
       BEDROCK_BATCH_INTERVAL_MINUTES: "5"
-      BEDROCK_BATCH_DIR: /estate/mock-external/bedrock-core-mock/data/batch
+      BEDROCK_BATCH_DIR: /estate/northgate-mock-external/bedrock-core-mock/data/batch
     volumes:
-      - bedrock-batch:/estate/mock-external/bedrock-core-mock/data/batch
+      - bedrock-batch:/estate/northgate-mock-external/bedrock-core-mock/data/batch
     healthcheck:
       test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:4600/health"]
       interval: 10s
@@ -81,7 +82,7 @@ services:
 
   aggregio-mock:
     <<: *mock
-    build: { context: .., dockerfile: mock-external/aggregio-mock/Dockerfile }
+    build: { context: .., dockerfile: northgate-mock-external/aggregio-mock/Dockerfile }
     image: northgate/aggregio-mock
     container_name: estate-aggregio-mock
     ports: ["4601:4601"]
@@ -91,7 +92,7 @@ services:
 
   tickerhaus-mock:
     <<: *mock
-    build: { context: .., dockerfile: mock-external/tickerhaus-mock/Dockerfile }
+    build: { context: .., dockerfile: northgate-mock-external/tickerhaus-mock/Dockerfile }
     image: northgate/tickerhaus-mock
     container_name: estate-tickerhaus-mock
     ports: ["4602:4602"]
@@ -100,7 +101,7 @@ services:
 
   triscore-mock:
     <<: *mock
-    build: { context: .., dockerfile: mock-external/triscore-mock/Dockerfile }
+    build: { context: .., dockerfile: northgate-mock-external/triscore-mock/Dockerfile }
     image: northgate/triscore-mock
     container_name: estate-triscore-mock
     ports: ["4603:4603"]
@@ -109,7 +110,7 @@ services:
 
   paylink-network-mock:
     <<: *mock
-    build: { context: .., dockerfile: mock-external/paylink-network-mock/Dockerfile }
+    build: { context: .., dockerfile: northgate-mock-external/paylink-network-mock/Dockerfile }
     image: northgate/paylink-network-mock
     container_name: estate-paylink-network-mock
     ports: ["4604:4604"]
@@ -119,7 +120,7 @@ services:
 
   vault-mock:
     <<: *mock
-    build: { context: .., dockerfile: mock-external/vault-mock/Dockerfile }
+    build: { context: .., dockerfile: northgate-mock-external/vault-mock/Dockerfile }
     image: northgate/vault-mock
     container_name: estate-vault-mock
     ports: ["4605:4605"]
@@ -128,18 +129,18 @@ services:
 
   splunk-hec-mock:
     <<: *mock
-    build: { context: .., dockerfile: mock-external/splunk-hec-mock/Dockerfile }
+    build: { context: .., dockerfile: northgate-mock-external/splunk-hec-mock/Dockerfile }
     image: northgate/splunk-hec-mock
     container_name: estate-splunk-hec-mock
     ports: ["4606:4606"]
-    environment: { <<: *mock-env, SPLUNK_HEC_PORT: "4606", HEC_DATA_DIR: /estate/mock-external/splunk-hec-mock/data, HEC_TOKENS: "CHANGEME-hec-token,CHANGEME-hec-token-mocks" }
+    environment: { <<: *mock-env, SPLUNK_HEC_PORT: "4606", HEC_DATA_DIR: /estate/northgate-mock-external/splunk-hec-mock/data, HEC_TOKENS: "CHANGEME-hec-token,CHANGEME-hec-token-mocks" }
     volumes:
-      - hec-data:/estate/mock-external/splunk-hec-mock/data
+      - hec-data:/estate/northgate-mock-external/splunk-hec-mock/data
     healthcheck: { test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:4606/health"], interval: 10s, timeout: 3s, retries: 6 }
 
   lantern-collector-mock:
     <<: *mock
-    build: { context: .., dockerfile: mock-external/lantern-collector-mock/Dockerfile }
+    build: { context: .., dockerfile: northgate-mock-external/lantern-collector-mock/Dockerfile }
     image: northgate/lantern-collector-mock
     container_name: estate-lantern-collector-mock
     ports: ["4607:4607"]
@@ -148,7 +149,7 @@ services:
 
   semaphore-flags-mock:
     <<: *mock
-    build: { context: .., dockerfile: mock-external/semaphore-flags-mock/Dockerfile }
+    build: { context: .., dockerfile: northgate-mock-external/semaphore-flags-mock/Dockerfile }
     image: northgate/semaphore-flags-mock
     container_name: estate-semaphore-flags-mock
     ports: ["4608:4608"]
@@ -157,7 +158,7 @@ services:
 
   ldap-mock:
     <<: *mock
-    build: { context: .., dockerfile: mock-external/ldap-mock/Dockerfile }
+    build: { context: .., dockerfile: northgate-mock-external/ldap-mock/Dockerfile }
     image: northgate/ldap-mock
     container_name: estate-ldap-mock
     ports: ["4609:4609", "14609:14609"]
