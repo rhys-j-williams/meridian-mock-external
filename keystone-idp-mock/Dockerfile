@@ -1,14 +1,15 @@
-# Build context is the repository root, because @northgate/domain-fixtures is a file: dependency
-# that lives in platform-services/. Dockerfile.dockerignore next to this file keeps the context
+# Build context is the parent workspace holding the sibling clones (northgate-mock-external and
+# northgate-platform-services), because @northgate/domain-fixtures is a file: dependency on
+# ../northgate-platform-services. Dockerfile.dockerignore next to this file keeps the context
 # small (needs BuildKit, which every Docker since 23 has).
-#   docker build -f mock-external/keystone-idp-mock/Dockerfile -t northgate/keystone-idp-mock .
+#   docker build -f northgate-mock-external/keystone-idp-mock/Dockerfile -t northgate/keystone-idp-mock .
 # One image per mock so compose can rebuild a single service. PLAT-2244.
 FROM node:18.19.0-alpine3.19 AS build
 WORKDIR /estate
-COPY platform-services/libs/ts/domain-fixtures ./platform-services/libs/ts/domain-fixtures
-RUN cd platform-services/libs/ts/domain-fixtures && npm ci --ignore-scripts && npm run build
-WORKDIR /estate/mock-external
-COPY mock-external ./
+COPY northgate-platform-services/libs/ts/domain-fixtures ./northgate-platform-services/libs/ts/domain-fixtures
+RUN cd northgate-platform-services/libs/ts/domain-fixtures && npm ci --ignore-scripts && npm run build
+WORKDIR /estate/northgate-mock-external
+COPY northgate-mock-external ./
 RUN npm ci --ignore-scripts \
  && npm run build --workspace lib/mock-kit \
  && npm run build --workspace keystone-idp-mock
@@ -18,5 +19,5 @@ ENV NODE_ENV=production
 WORKDIR /estate
 COPY --from=build /estate ./
 USER node
-WORKDIR /estate/mock-external/keystone-idp-mock
+WORKDIR /estate/northgate-mock-external/keystone-idp-mock
 CMD ["node", "dist/main.js"]
