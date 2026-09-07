@@ -1,7 +1,7 @@
-import { createMockApp, MockApp, sendError, stableHash } from '@meridian/mock-kit';
+import { createMockApp, MockApp, sendError, stableHash } from '@northgate/mock-kit';
 
 /**
- * TickerHaus market data. Consumed by ledgerline-web (FX on wires) and by the Meridian Online
+ * TickerHaus market data. Consumed by ledgerline-web (FX on wires) and by the Northgate Online
  * markets tile. Rates are a deterministic random walk seeded from the pair so two developers
  * looking at the same second see the same number, which turned out to matter for screenshots
  * in defect reports (MOL-4471).
@@ -15,13 +15,13 @@ const BASE_RATES: Record<string, number> = {
   EURUSD: 1.0842, GBPUSD: 1.2710, USDJPY: 149.32, USDCAD: 1.3565, USDMXN: 17.08, AUDUSD: 0.6551, USDCHF: 0.8812, USDCNH: 7.2140
 };
 
-// Fictional indices. The names are Meridian-internal composites, not exchange products.
+// Fictional indices. The names are Northgate-internal composites, not exchange products.
 const INDICES: Record<string, { name: string; base: number }> = {
-  'MTB:US100': { name: 'Meridian US Large Cap Composite', base: 4821.35 },
-  'MTB:USMID': { name: 'Meridian US Mid Cap Composite', base: 2743.10 },
-  'MTB:GLOBAL': { name: 'Meridian Global Blend', base: 1187.62 },
-  'MTB:RATES10': { name: 'Meridian 10Y Benchmark Yield', base: 4.27 },
-  'MTB:CRED': { name: 'Meridian IG Credit Spread', base: 98.4 }
+  'MTB:US100': { name: 'Northgate US Large Cap Composite', base: 4821.35 },
+  'MTB:USMID': { name: 'Northgate US Mid Cap Composite', base: 2743.10 },
+  'MTB:GLOBAL': { name: 'Northgate Global Blend', base: 1187.62 },
+  'MTB:RATES10': { name: 'Northgate 10Y Benchmark Yield', base: 4.27 },
+  'MTB:CRED': { name: 'Northgate IG Credit Spread', base: 98.4 }
 };
 
 function walk(symbol: string, base: number, tSeconds: number, volatility: number): number {

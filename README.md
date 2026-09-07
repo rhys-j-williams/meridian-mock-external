@@ -7,13 +7,13 @@ laptop or a build agent.
 
 Why this exists: before 2022 every squad had its own WireMock folder for the same handful of
 vendors and none of them agreed on what an account looked like. `PLAT-1900` consolidated them here,
-on top of `@meridian/domain-fixtures`, so the same customer shows the same balance in retail-web,
+on top of `@northgate/domain-fixtures`, so the same customer shows the same balance in retail-web,
 business-web, the BFF logs and the Bedrock batch report.
 
 ## Quick start
 
 ```
-cd meridian-mock-external
+cd northgate-mock-external
 ./estate-up.sh          # Verdaccio, internal packages, mocks, platform services, port table
 ./smoke.sh              # end-to-end checks, non-zero exit on any FAIL
 ./estate-down.sh
@@ -28,9 +28,9 @@ Other switches in `estate-up.sh`: `ESTATE_SKIP_PUBLISH=1`, `ESTATE_SKIP_SERVICES
 (pids, logs, Verdaccio storage, HEC data) lives under `.estate/` and is not committed.
 
 The scripts expect the other repositories cloned next to this one under their GitHub names
-(`meridian-platform-services`, `meridian-lantern-sdk`, `meridian-canopy-ui`); `MERIDIAN_WORKSPACE`
+(`northgate-platform-services`, `northgate-lantern-sdk`, `northgate-canopy-ui`); `NORTHGATE_WORKSPACE`
 or the per repository `*_REPO` variables override that. The workspace layout is described in
-`meridian-cswt-workspace/README.md`.
+`northgate-cswt-workspace/README.md`.
 
 Platform services that are not in the checkout are reported as SKIP by both scripts, with the
 directory name, rather than failing. That is deliberate: the services land on their own branches and
@@ -43,7 +43,7 @@ Keystone client redirect URIs are all keyed to these.
 
 | service | port | notes |
 | --- | --- | --- |
-| verdaccio | 4873 | npm registry, stands in for Artifactory `npm-meridian` |
+| verdaccio | 4873 | npm registry, stands in for Artifactory `npm-northgate` |
 | keystone-idp-mock | 4400 | OIDC issuer `http://localhost:4400` |
 | bedrock-core-mock | 4600 | REST facade; the real interface is BEDROCK.REQ/RESP |
 | aggregio-mock | 4601 | account aggregation vendor |
@@ -115,7 +115,7 @@ call walking from `bff-retail` to `bedrock-adapter`.
 
 **lantern-collector-mock.** `/v1/batch` and `/v1/track|page|identify`, `/v1/summary`, `/v1/events`, and
 `/lantern.min.js`, a stand-in for the vendor script that exposes `window.Lantern` with
-`track`, `page`, `identify`, a queue it drains on load, and posts here. `@meridian/lantern-sdk`
+`track`, `page`, `identify`, a queue it drains on load, and posts here. `@northgate/lantern-sdk`
 points at it through `collectorUrl` in the local environments.
 
 **semaphore-flags-mock.** Flags by environment and segment: `paylink_request_money`,
@@ -127,10 +127,10 @@ with any staff DN and `Passw0rd`. LDAP over TCP on 4609, plus a REST peek at `/d
 debugging.
 
 **verdaccio.** Config in `verdaccio/config.yaml`: anonymous read, one publisher
-(`meridian-publisher`, password placeholder in `htpasswd`), uplink to public npm for everything
-except `@meridian/*`, which never leaves the building. `scripts/verdaccio-up.sh` starts it (Docker
-or `npx verdaccio`), `scripts/publish-internal.sh` builds and publishes `@meridian/domain-fixtures`,
-`@meridian/semaphore-client` and `@meridian/lantern-sdk` in that order, skipping any whose directory
+(`northgate-publisher`, password placeholder in `htpasswd`), uplink to public npm for everything
+except `@northgate/*`, which never leaves the building. `scripts/verdaccio-up.sh` starts it (Docker
+or `npx verdaccio`), `scripts/publish-internal.sh` builds and publishes `@northgate/domain-fixtures`,
+`@northgate/semaphore-client` and `@northgate/lantern-sdk` in that order, skipping any whose directory
 is not in the checkout. Storage is `/verdaccio/storage` in the image, `.estate/verdaccio` locally.
 
 ## Infrastructure
@@ -142,13 +142,13 @@ works without it. Queues `ACCT.EVENTS`, `BEACON.OUT`, `BEACON.DLQ`, `BEDROCK.REQ
 are created at broker start in both cases.
 
 Spring profiles the Java services use against this, documented properly in
-`platform-services/libs/java/meridian-messaging`:
+`platform-services/libs/java/northgate-messaging`:
 
 - `local-artemis` - JMS over Artemis instead of MQ. Same abstraction, different ConnectionFactory.
   Differences that have bitten us are in `infra/artemis/README.md` (expiry units, auto-create).
 - `local-inmem-kafka` - no broker at all, an in-memory topic map. Used when Docker is absent.
   Ordering is preserved per key, nothing else is.
-- Redis: with Docker, the real thing. Without, `meridian-cache` falls back to an in-memory map with
+- Redis: with Docker, the real thing. Without, `northgate-cache` falls back to an in-memory map with
   the same TTL semantics and no eviction. Do not load test against it.
 
 ### Oracle and DB2 are not here
@@ -165,7 +165,7 @@ looking for the JDBC URL shape when they need it:
 ```yaml
 # spring:
 #   datasource:
-#     url: jdbc:oracle:thin:@//ledgerline-uat.db.meridian.internal:1521/LDGUAT
+#     url: jdbc:oracle:thin:@//ledgerline-uat.db.northgate.internal:1521/LDGUAT
 #     username: ${vault:secret/ledgerline/uat#username}
 #     password: ${vault:secret/ledgerline/uat#password}
 #     driver-class-name: oracle.jdbc.OracleDriver
@@ -177,7 +177,7 @@ spring:
 ```yaml
 # spring:
 #   datasource:
-#     url: jdbc:db2://custmaster-uat.db.meridian.internal:50000/CUSTM
+#     url: jdbc:db2://custmaster-uat.db.northgate.internal:50000/CUSTM
 #     driver-class-name: com.ibm.db2.jcc.DB2Driver
 spring:
   datasource:
@@ -214,7 +214,7 @@ npm run build    # tsc per workspace
 npm test         # jest, --runInBand because bedrock and keystone bind ports
 ```
 
-`@meridian/domain-fixtures` is a `file:` dependency here so the mocks can be built before Verdaccio
+`@northgate/domain-fixtures` is a `file:` dependency here so the mocks can be built before Verdaccio
 is up (chicken and egg, `PLAT-2244`). Everyone else installs it from the registry.
 
 Adding a mock: copy `semaphore-flags-mock`, register it in `package.json` workspaces, `scripts/

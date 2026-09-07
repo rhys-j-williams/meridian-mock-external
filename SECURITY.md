@@ -1,12 +1,12 @@
 # Application security standard — External system mocks
 
-Owner: @meridian/platform-engineering. Standard reference: GIS-STD-014 Application Security Requirements for Internet
+Owner: @northgate/platform-engineering. Standard reference: GIS-STD-014 Application Security Requirements for Internet
 Facing and Internal Digital Channels, revision 9, effective 1 February 2026.
 
 ## Reporting
 
 Suspected vulnerabilities go to the Global Information Security intake queue
-(`gis-appsec-intake@meridian.internal`) with the component name `mock-external` and, if the finding came
+(`gis-appsec-intake@northgate.internal`) with the component name `mock-external` and, if the finding came
 from a scan, the Checkmarx or Xray report identifier. Do not raise a public issue and do not
 attach exploit payloads to a Jira ticket.
 
@@ -22,8 +22,8 @@ attach exploit payloads to a Jira ticket.
    configuration.
 4. **Output encoding.** Angular's default sanitisation must not be bypassed. Any use of
    `bypassSecurityTrust*` requires a documented GIS exception with an expiry date.
-5. **Cross site request forgery.** State changing calls carry the `X-MERIDIAN-XSRF` header sourced
-   from the `MERIDIAN-XSRF` cookie.
+5. **Cross site request forgery.** State changing calls carry the `X-NORTHGATE-XSRF` header sourced
+   from the `NORTHGATE-XSRF` cookie.
 6. **Content Security Policy.** No `unsafe-inline` for scripts. Vendor origins are allow-listed
    individually and reviewed at each release train.
 7. **Secrets.** No credentials in source, configuration, fixtures or pipeline definitions. Runtime

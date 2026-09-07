@@ -1,5 +1,5 @@
 {
-  "name": "@meridian/keystone-idp-mock",
+  "name": "@northgate/keystone-idp-mock",
   "version": "1.9.2",
   "private": true,
   "description": "Keystone identity provider mock: OIDC discovery, JWKS, authorization code with PKCE, password and MFA pages, SAML stub",

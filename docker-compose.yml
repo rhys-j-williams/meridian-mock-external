@@ -9,14 +9,14 @@
 #
 # Oracle and DB2 are deliberately absent. The Java services run H2 in compatibility mode. README.
 
-name: meridian-estate
+name: northgate-estate
 
 x-mock: &mock
   restart: unless-stopped
   init: true
   environment: &mock-env
     NODE_ENV: production
-    MERIDIAN_FIXTURE_SEED: meridian
+    NORTHGATE_FIXTURE_SEED: northgate
     SPLUNK_HEC_URL: http://splunk-hec-mock:4606/services/collector/event
     SPLUNK_HEC_TOKEN: CHANGEME-hec-token-mocks
   networks: [estate]
@@ -24,7 +24,7 @@ x-mock: &mock
 services:
   verdaccio:
     build: ./verdaccio
-    image: meridian/verdaccio:5.29.2
+    image: northgate/verdaccio:5.29.2
     container_name: estate-verdaccio
     restart: unless-stopped
     ports: ["4873:4873"]
@@ -43,7 +43,7 @@ services:
   keystone-idp-mock:
     <<: *mock
     build: { context: .., dockerfile: mock-external/keystone-idp-mock/Dockerfile }
-    image: meridian/keystone-idp-mock
+    image: northgate/keystone-idp-mock
     container_name: estate-keystone-idp-mock
     ports: ["4400:4400"]
     environment:
@@ -59,7 +59,7 @@ services:
   bedrock-core-mock:
     <<: *mock
     build: { context: .., dockerfile: mock-external/bedrock-core-mock/Dockerfile }
-    image: meridian/bedrock-core-mock
+    image: northgate/bedrock-core-mock
     container_name: estate-bedrock-core-mock
     ports: ["4600:4600"]
     environment:
@@ -82,7 +82,7 @@ services:
   aggregio-mock:
     <<: *mock
     build: { context: .., dockerfile: mock-external/aggregio-mock/Dockerfile }
-    image: meridian/aggregio-mock
+    image: northgate/aggregio-mock
     container_name: estate-aggregio-mock
     ports: ["4601:4601"]
     environment: { <<: *mock-env, AGGREGIO_PORT: "4601", AGGREGIO_DEFAULT_WEBHOOK: "http://host.docker.internal:4500/webhooks/aggregio" }
@@ -92,7 +92,7 @@ services:
   tickerhaus-mock:
     <<: *mock
     build: { context: .., dockerfile: mock-external/tickerhaus-mock/Dockerfile }
-    image: meridian/tickerhaus-mock
+    image: northgate/tickerhaus-mock
     container_name: estate-tickerhaus-mock
     ports: ["4602:4602"]
     environment: { <<: *mock-env, TICKERHAUS_PORT: "4602" }
@@ -101,7 +101,7 @@ services:
   triscore-mock:
     <<: *mock
     build: { context: .., dockerfile: mock-external/triscore-mock/Dockerfile }
-    image: meridian/triscore-mock
+    image: northgate/triscore-mock
     container_name: estate-triscore-mock
     ports: ["4603:4603"]
     environment: { <<: *mock-env, TRISCORE_PORT: "4603" }
@@ -110,7 +110,7 @@ services:
   paylink-network-mock:
     <<: *mock
     build: { context: .., dockerfile: mock-external/paylink-network-mock/Dockerfile }
-    image: meridian/paylink-network-mock
+    image: northgate/paylink-network-mock
     container_name: estate-paylink-network-mock
     ports: ["4604:4604"]
     environment: { <<: *mock-env, PAYLINK_PORT: "4604", PAYLINK_DEFAULT_WEBHOOK: "http://host.docker.internal:4500/webhooks/paylink" }
@@ -120,7 +120,7 @@ services:
   vault-mock:
     <<: *mock
     build: { context: .., dockerfile: mock-external/vault-mock/Dockerfile }
-    image: meridian/vault-mock
+    image: northgate/vault-mock
     container_name: estate-vault-mock
     ports: ["4605:4605"]
     environment: { <<: *mock-env, VAULT_PORT: "4605", VAULT_DEV_ROOT_TOKEN_ID: CHANGEME-vault-root-token }
@@ -129,7 +129,7 @@ services:
   splunk-hec-mock:
     <<: *mock
     build: { context: .., dockerfile: mock-external/splunk-hec-mock/Dockerfile }
-    image: meridian/splunk-hec-mock
+    image: northgate/splunk-hec-mock
     container_name: estate-splunk-hec-mock
     ports: ["4606:4606"]
     environment: { <<: *mock-env, SPLUNK_HEC_PORT: "4606", HEC_DATA_DIR: /estate/mock-external/splunk-hec-mock/data, HEC_TOKENS: "CHANGEME-hec-token,CHANGEME-hec-token-mocks" }
@@ -140,7 +140,7 @@ services:
   lantern-collector-mock:
     <<: *mock
     build: { context: .., dockerfile: mock-external/lantern-collector-mock/Dockerfile }
-    image: meridian/lantern-collector-mock
+    image: northgate/lantern-collector-mock
     container_name: estate-lantern-collector-mock
     ports: ["4607:4607"]
     environment: { <<: *mock-env, LANTERN_COLLECTOR_PORT: "4607" }
@@ -149,7 +149,7 @@ services:
   semaphore-flags-mock:
     <<: *mock
     build: { context: .., dockerfile: mock-external/semaphore-flags-mock/Dockerfile }
-    image: meridian/semaphore-flags-mock
+    image: northgate/semaphore-flags-mock
     container_name: estate-semaphore-flags-mock
     ports: ["4608:4608"]
     environment: { <<: *mock-env, SEMAPHORE_PORT: "4608" }
@@ -158,7 +158,7 @@ services:
   ldap-mock:
     <<: *mock
     build: { context: .., dockerfile: mock-external/ldap-mock/Dockerfile }
-    image: meridian/ldap-mock
+    image: northgate/ldap-mock
     container_name: estate-ldap-mock
     ports: ["4609:4609", "14609:14609"]
     environment: { <<: *mock-env, LDAP_PORT: "4609", LDAP_HTTP_PORT: "14609" }
@@ -262,4 +262,4 @@ volumes:
 
 networks:
   estate:
-    name: meridian-estate
+    name: northgate-estate

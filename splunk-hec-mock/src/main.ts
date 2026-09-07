@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { envPort } from '@meridian/mock-kit';
+import { envPort } from '@northgate/mock-kit';
 import { buildServer } from './server';
 
 const tokens = (process.env.HEC_TOKENS || 'CHANGEME-hec-token,CHANGEME-hec-token-mocks').split(',').map((t) => t.trim()).filter(Boolean);

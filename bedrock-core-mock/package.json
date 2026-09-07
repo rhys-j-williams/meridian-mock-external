@@ -1,5 +1,5 @@
 {
-  "name": "@meridian/bedrock-core-mock",
+  "name": "@northgate/bedrock-core-mock",
   "version": "3.4.0",
   "private": true,
   "description": "Bedrock core ledger mock: fixed width CICS style request and reply over a queue, in memory postings, end of day batch, REST facade",

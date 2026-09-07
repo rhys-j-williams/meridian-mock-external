@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { createMockApp, deliverWebhook, fixtures, MockApp, sendError, stableHash, WebhookDelivery } from '@meridian/mock-kit';
+import { createMockApp, deliverWebhook, fixtures, MockApp, sendError, stableHash, WebhookDelivery } from '@northgate/mock-kit';
 
 /**
  * Aggregio: external account aggregation. Shapes follow the Aggregio Connect v2 API as
@@ -25,7 +25,7 @@ const INSTITUTIONS: Institution[] = [
   { institutionId: 'ins_100003', name: 'Summit Ridge Bank', logo: 'summitridge.svg', products: ['checking', 'credit'], healthy: true },
   { institutionId: 'ins_100004', name: 'Bluewater Savings', logo: 'bluewater.svg', products: ['savings', 'certificate'], healthy: false },
   { institutionId: 'ins_100005', name: 'Prairie Mutual', logo: 'prairie.svg', products: ['checking', 'auto-loan'], healthy: true },
-  { institutionId: 'ins_100006', name: 'Northgate Community Bank', logo: 'northgate.svg', products: ['checking', 'savings', 'credit'], healthy: true },
+  { institutionId: 'ins_100006', name: 'Westgate Community Bank', logo: 'westgate.svg', products: ['checking', 'savings', 'credit'], healthy: true },
   { institutionId: 'ins_100007', name: 'Sablewood Trust', logo: 'sablewood.svg', products: ['brokerage'], healthy: true },
   { institutionId: 'ins_100008', name: 'Ironvale Bank', logo: 'ironvale.svg', products: ['checking'], healthy: true }
 ];

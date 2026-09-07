@@ -1,5 +1,5 @@
 import * as ldap from 'ldapjs';
-import { createMockApp, MockApp } from '@meridian/mock-kit';
+import { createMockApp, MockApp } from '@northgate/mock-kit';
 import { BASE_DN, buildDirectory, Entry, normaliseDn, passwordFor } from './directory';
 
 /**

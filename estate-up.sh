@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# estate-up.sh - bring the local Meridian estate up in one go.
+# estate-up.sh - bring the local Northgate estate up in one go.
 #
 #   1. Verdaccio on 4873 and the internal packages published to it
 #   2. the external mocks + infrastructure (compose when Docker works, in-process otherwise)
-#   3. the platform services the front ends need, from the meridian-platform-services checkout
+#   3. the platform services the front ends need, from the northgate-platform-services checkout
 #      next to this one (or PLATFORM_SERVICES_REPO), in the background
 #   4. a table of URLs
 #
@@ -19,16 +19,16 @@
 # Sibling repositories that are not checked out are skipped with a warning, on purpose: the mocks
 # must not depend on the services or the libraries being present. Same for canopy-ui and
 # lantern-sdk in the publish step. Layout is one workspace directory with each repository cloned
-# under its GitHub name (MERIDIAN_WORKSPACE overrides the default of the parent directory).
+# under its GitHub name (NORTHGATE_WORKSPACE overrides the default of the parent directory).
 #
 # State lives in mock-external/.estate (pids, logs). estate-down.sh reads it. PLAT-2244, PLAT-2301.
 set -uo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-WORKSPACE="${MERIDIAN_WORKSPACE:-$(cd "$HERE/.." && pwd)}"
+WORKSPACE="${NORTHGATE_WORKSPACE:-$(cd "$HERE/.." && pwd)}"
 STATE="$HERE/.estate"
 LOGS="$STATE/logs"
-SERVICES_ROOT="${PLATFORM_SERVICES_REPO:-$WORKSPACE/meridian-platform-services}"
+SERVICES_ROOT="${PLATFORM_SERVICES_REPO:-$WORKSPACE/northgate-platform-services}"
 WAIT_SECS="${ESTATE_WAIT_SECS:-180}"
 mkdir -p "$LOGS"
 
@@ -79,7 +79,7 @@ log "mode: $MODE   (workspace: $WORKSPACE)"
 # ------------------------------------------------------------------------------------------------
 step "1/4 registry"
 if ! ESTATE_NO_DOCKER="${ESTATE_NO_DOCKER:-0}" bash "$HERE/scripts/verdaccio-up.sh"; then
-  warn "Verdaccio did not start; npm installs against @meridian/* will fall back to file: deps"
+  warn "Verdaccio did not start; npm installs against @northgate/* will fall back to file: deps"
 fi
 
 # ------------------------------------------------------------------------------------------------
@@ -195,7 +195,7 @@ export KEYSTONE_JWKS_URI="${KEYSTONE_JWKS_URI:-http://localhost:4400/.well-known
 export SPLUNK_HEC_URL="${SPLUNK_HEC_URL:-http://localhost:4606/services/collector/event}"
 export SPLUNK_HEC_TOKEN="${SPLUNK_HEC_TOKEN:-CHANGEME-hec-token}"
 # No filebeat sidecar outside the cluster: the Node BFFs post to HEC themselves (INC0048817).
-export MERIDIAN_HEC_DIRECT="${MERIDIAN_HEC_DIRECT:-true}"
+export NORTHGATE_HEC_DIRECT="${NORTHGATE_HEC_DIRECT:-true}"
 export VAULT_ADDR="${VAULT_ADDR:-http://localhost:4605}"
 export VAULT_TOKEN="${VAULT_TOKEN:-CHANGEME-vault-root-token}"
 export SEMAPHORE_URL="${SEMAPHORE_URL:-http://localhost:4608}"
@@ -331,7 +331,7 @@ fi
 
 # ------------------------------------------------------------------------------------------------
 echo
-bold "Meridian Trust Bank - local estate ($MODE)"
+bold "Northgate Trust Bank - local estate ($MODE)"
 printf '%-28s %-7s %-32s %s\n' "component" "port" "url" "status"
 printf '%-28s %-7s %-32s %s\n' "---------" "----" "---" "------"
 printf '%-28s %-7s %-32s %s\n' "verdaccio (registry)" 4873 "http://localhost:4873" "$(curl -fs -o /dev/null http://localhost:4873/-/ping && echo up || echo 'NOT ANSWERING')"

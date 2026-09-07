@@ -1,7 +1,7 @@
-# Build context is the repository root, because @meridian/domain-fixtures is a file: dependency
+# Build context is the repository root, because @northgate/domain-fixtures is a file: dependency
 # that lives in platform-services/. Dockerfile.dockerignore next to this file keeps the context
 # small (needs BuildKit, which every Docker since 23 has).
-#   docker build -f mock-external/splunk-hec-mock/Dockerfile -t meridian/splunk-hec-mock .
+#   docker build -f mock-external/splunk-hec-mock/Dockerfile -t northgate/splunk-hec-mock .
 # One image per mock so compose can rebuild a single service. PLAT-2244.
 FROM node:18.19.0-alpine3.19 AS build
 WORKDIR /estate

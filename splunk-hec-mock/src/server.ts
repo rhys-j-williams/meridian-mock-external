@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as readline from 'readline';
-import { createMockApp, MockApp } from '@meridian/mock-kit';
+import { createMockApp, MockApp } from '@northgate/mock-kit';
 
 /**
  * Splunk HTTP Event Collector. Accepts /services/collector/event (single JSON or newline

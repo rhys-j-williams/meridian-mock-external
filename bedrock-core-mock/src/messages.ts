@@ -3,7 +3,7 @@ import {
   decodeZonedDecimal,
   encodeZonedDecimal,
   DecodedAccountRecord
-} from '@meridian/domain-fixtures';
+} from '@northgate/domain-fixtures';
 
 /**
  * MTBREQ / MTBRESP: the CICS request and reply envelopes bedrock-adapter-service puts on

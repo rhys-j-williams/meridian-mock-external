@@ -9,5 +9,5 @@ module.exports = {
     '<rootDir>/lantern-collector-mock', '<rootDir>/semaphore-flags-mock', '<rootDir>/ldap-mock'],
   testMatch: ['**/src/**/*.spec.ts'],
   transform: { '^.+\\.ts$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.jest.json' }] },
-  moduleNameMapper: { '^@meridian/mock-kit$': '<rootDir>/lib/mock-kit/src/index.ts' }
+  moduleNameMapper: { '^@northgate/mock-kit$': '<rootDir>/lib/mock-kit/src/index.ts' }
 };

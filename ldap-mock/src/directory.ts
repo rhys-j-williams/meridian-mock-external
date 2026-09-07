@@ -1,11 +1,11 @@
-import { stableHash } from '@meridian/mock-kit';
+import { stableHash } from '@northgate/mock-kit';
 
 /**
- * The staff directory. In the bank this is Active Directory (MERIDIAN\ domain) fronted by a
+ * The staff directory. In the bank this is Active Directory (NORTHGATE\ domain) fronted by a
  * read-only LDAP proxy; here it is a list. Handles are the ones in the git history roster so
  * `git log` authors and directory users line up when somebody greps for a name in the demo.
  *
- * Base DN: dc=meridiantrust,dc=example
+ * Base DN: dc=northgatetrust,dc=example
  *   ou=staff             people, uid=<handle>
  *   ou=service-accounts  cn=svc-<service>
  *   ou=groups            cn=<group>, groupOfNames with member DNs
@@ -14,7 +14,7 @@ import { stableHash } from '@meridian/mock-kit';
  * accounts use CHANGEME-ldap-bind.
  */
 
-export const BASE_DN = 'dc=meridiantrust,dc=example';
+export const BASE_DN = 'dc=northgatetrust,dc=example';
 export const STAFF_OU = `ou=staff,${BASE_DN}`;
 export const SERVICE_OU = `ou=service-accounts,${BASE_DN}`;
 export const GROUPS_OU = `ou=groups,${BASE_DN}`;
@@ -69,7 +69,7 @@ const GROUPS: Record<string, string> = {
 
 export function buildDirectory(): Entry[] {
   const entries: Entry[] = [
-    { dn: BASE_DN, attributes: { objectClass: ['top', 'dcObject', 'organization'], dc: 'meridiantrust', o: 'Meridian Trust Bank' } },
+    { dn: BASE_DN, attributes: { objectClass: ['top', 'dcObject', 'organization'], dc: 'northgatetrust', o: 'Northgate Trust Bank' } },
     { dn: STAFF_OU, attributes: { objectClass: ['top', 'organizationalUnit'], ou: 'staff' } },
     { dn: SERVICE_OU, attributes: { objectClass: ['top', 'organizationalUnit'], ou: 'service-accounts' } },
     { dn: GROUPS_OU, attributes: { objectClass: ['top', 'organizationalUnit'], ou: 'groups' } }
@@ -81,7 +81,7 @@ export function buildDirectory(): Entry[] {
       attributes: {
         objectClass: ['top', 'person', 'organizationalPerson', 'inetOrgPerson'],
         uid: p.uid, cn: p.cn, sn: p.sn, givenName: p.givenName,
-        mail: `${p.uid}@meridiantrust.example`,
+        mail: `${p.uid}@northgatetrust.example`,
         title: p.title, departmentNumber: p.department, l: p.site,
         employeeNumber: String(100000 + (stableHash(p.uid) % 900000)),
         sAMAccountName: p.uid,

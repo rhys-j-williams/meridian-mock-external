@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
-import { createMockApp, fixtures, MockApp, sendError, stableHash } from '@meridian/mock-kit';
-import { Customer } from '@meridian/domain-fixtures';
+import { createMockApp, fixtures, MockApp, sendError, stableHash } from '@northgate/mock-kit';
+import { Customer } from '@northgate/domain-fixtures';
 
 /**
  * TriScore credit bureau and identity verification. Score is a pure function of customerId
@@ -71,7 +71,7 @@ function kbaFor(customer: Customer): { questions: KbaQuestion[]; answers: string
       answer: streetWord
     },
     {
-      q: { questionId: 'kba-year', text: 'In what year did you open your oldest Meridian account?', choices: shuffle([oldest, ...years], seed >> 3) },
+      q: { questionId: 'kba-year', text: 'In what year did you open your oldest Northgate account?', choices: shuffle([oldest, ...years], seed >> 3) },
       answer: oldest
     },
     {

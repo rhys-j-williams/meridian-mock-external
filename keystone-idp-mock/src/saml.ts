@@ -42,7 +42,7 @@ export async function samlResponsePage(issuer: string, keys: SigningKeys, acs: s
       </saml:SubjectConfirmation>
     </saml:Subject>
     <saml:Conditions NotBefore="${now.toISOString()}" NotOnOrAfter="${notAfter.toISOString()}">
-      <saml:AudienceRestriction><saml:Audience>urn:meridian:wealth-portal</saml:Audience></saml:AudienceRestriction>
+      <saml:AudienceRestriction><saml:Audience>urn:northgate:wealth-portal</saml:Audience></saml:AudienceRestriction>
     </saml:Conditions>
     <saml:AuthnStatement AuthnInstant="${now.toISOString()}">
       <saml:AuthnContext><saml:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml:AuthnContextClassRef></saml:AuthnContext>

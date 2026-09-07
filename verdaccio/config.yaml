@@ -1,8 +1,8 @@
 # Verdaccio standing in for the Artifactory virtual repository npm-virtual.
-# Anonymous read, one publisher (meridian-publisher), uplink to public npm so a fresh box can
+# Anonymous read, one publisher (northgate-publisher), uplink to public npm so a fresh box can
 # bootstrap. Storage is ./storage which is gitignored; blow it away when a publish goes wrong.
 #
-# Real thing: https://artifactory.meridian.internal/artifactory/api/npm/npm-virtual/ (see
+# Real thing: https://artifactory.northgate.internal/artifactory/api/npm/npm-virtual/ (see
 # platform-tooling/registry/repositories.json). Nothing in here talks to it.
 
 storage: ./storage
@@ -10,7 +10,7 @@ plugins: ./plugins
 
 web:
   enable: true
-  title: Meridian Trust Bank - local registry (Verdaccio, stand in for Artifactory)
+  title: Northgate Trust Bank - local registry (Verdaccio, stand in for Artifactory)
   # the "Artifactory" tab everyone expects is not here; TOOL-1188
 
 auth:
@@ -30,16 +30,16 @@ uplinks:
     fail_timeout: 2m
 
 packages:
-  '@meridian/*':
+  '@northgate/*':
     # internal scope: never proxied. If it is not published here it does not exist.
     access: $all
-    publish: meridian-publisher
-    unpublish: meridian-publisher
+    publish: northgate-publisher
+    unpublish: northgate-publisher
 
   '**':
     access: $all
-    publish: meridian-publisher
-    unpublish: meridian-publisher
+    publish: northgate-publisher
+    unpublish: northgate-publisher
     proxy: npmjs
 
 server:

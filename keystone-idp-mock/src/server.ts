@@ -1,6 +1,6 @@
 import { randomBytes, randomUUID } from 'crypto';
 import { createLocalJWKSet, jwtVerify } from 'jose';
-import { createMockApp, MockApp, Request, Response, sendError } from '@meridian/mock-kit';
+import { createMockApp, MockApp, Request, Response, sendError } from '@northgate/mock-kit';
 import { API_AUDIENCE, findClient, OidcClient } from './clients';
 import { atHash, createSigningKeys, s256, sign, SigningKeys } from './keys';
 import { errorPage, loggedOutPage, loginPage, mfaPage } from './pages';
@@ -101,7 +101,7 @@ export async function buildServer(options: ServerOptions): Promise<MockApp> {
     token_endpoint_auth_methods_supported: ['client_secret_basic', 'client_secret_post', 'none'],
     claims_supported: ['sub', 'iss', 'aud', 'exp', 'iat', 'nonce', 'amr', 'acr', 'mfa_at', 'auth_time',
       'name', 'given_name', 'family_name', 'preferred_username', 'email', 'email_verified', 'phone_number',
-      'meridian_segment', 'meridian_org'],
+      'northgate_segment', 'northgate_org'],
     code_challenge_methods_supported: ['S256', 'plain'],
     request_parameter_supported: false,
     claims_parameter_supported: false
@@ -127,7 +127,7 @@ export async function buildServer(options: ServerOptions): Promise<MockApp> {
       preferred_username: user.username,
       amr,
       mfa_at: mfaAt,
-      meridian_segment: user.segment,
+      northgate_segment: user.segment,
       jti: randomUUID()
     }, issuer, API_AUDIENCE, client.accessTokenTtlSeconds);
 
@@ -136,11 +136,11 @@ export async function buildServer(options: ServerOptions): Promise<MockApp> {
       nonce,
       auth_time: authTime || Math.floor(Date.now() / 1000),
       amr,
-      acr: amr.includes('otp') ? 'urn:meridian:keystone:loa2' : 'urn:meridian:keystone:loa1',
+      acr: amr.includes('otp') ? 'urn:northgate:keystone:loa2' : 'urn:northgate:keystone:loa1',
       mfa_at: mfaAt,
       at_hash: atHash(accessToken),
       azp: client.clientId,
-      meridian_segment: user.segment
+      northgate_segment: user.segment
     };
     if (scope.includes('profile')) {
       Object.assign(idClaims, {
@@ -148,7 +148,7 @@ export async function buildServer(options: ServerOptions): Promise<MockApp> {
         given_name: user.givenName,
         family_name: user.familyName,
         preferred_username: user.username,
-        meridian_org: user.organisation
+        northgate_org: user.organisation
       });
     }
     if (scope.includes('email')) {
@@ -499,8 +499,8 @@ export async function buildServer(options: ServerOptions): Promise<MockApp> {
         email: user.email,
         email_verified: true,
         phone_number: user.phone,
-        meridian_segment: user.segment,
-        meridian_org: user.organisation,
+        northgate_segment: user.segment,
+        northgate_org: user.organisation,
         amr: payload.amr,
         mfa_at: payload.mfa_at
       });

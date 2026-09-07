@@ -1,5 +1,5 @@
 {
-  "name": "@meridian/semaphore-flags-mock",
+  "name": "@northgate/semaphore-flags-mock",
   "version": "1.1.0",
   "private": true,
   "description": "Semaphore feature flag mock with per environment and per segment flags",

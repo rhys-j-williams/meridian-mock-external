@@ -1,4 +1,4 @@
-import { envPort } from '@meridian/mock-kit';
+import { envPort } from '@northgate/mock-kit';
 import { buildServer } from './server';
 
 buildServer().listen(envPort('VAULT_PORT', 4605)).catch((err) => {

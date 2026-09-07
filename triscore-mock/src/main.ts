@@ -1,4 +1,4 @@
-import { envPort } from '@meridian/mock-kit';
+import { envPort } from '@northgate/mock-kit';
 import { buildServer } from './server';
 
 buildServer().listen(envPort('TRISCORE_PORT', 4603)).catch((err) => {
